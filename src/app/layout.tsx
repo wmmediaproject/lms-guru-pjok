@@ -19,6 +19,15 @@ const fontHeading = Barlow_Condensed({
 export const metadata: Metadata = {
   title: "LMS Guru PJOK",
   description: "Aplikasi pengelolaan nilai dan siswa PJOK Kelas 1–6",
+  applicationName: "LMS PJOK",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "LMS PJOK",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 }
 
 export default function RootLayout({

@@ -19,6 +19,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
       })
   )
 
+  React.useEffect(() => {
+    if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .catch((err) => {
+            console.error("Gagal mendaftarkan Service Worker:", err)
+          })
+      })
+    }
+  }, [])
+
   return (
     <NextThemesProvider
       attribute="class"
