@@ -30,3 +30,12 @@ export const studentSchema = z.object({
 
 export type StudentFormValues = z.input<typeof studentSchema>
 export type StudentValidatedInput = z.output<typeof studentSchema>
+
+export function isValidKelasNumber(val: unknown): val is number {
+  return (
+    typeof val === "number" &&
+    Number.isInteger(val) &&
+    val >= 1 &&
+    val <= 6
+  )
+}

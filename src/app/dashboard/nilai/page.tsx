@@ -1,25 +1,79 @@
 import type { Metadata } from "next"
-import { Award } from "lucide-react"
-import { PageHeader } from "@/components/shared/page-header"
-import { EmptyState } from "@/components/shared/empty-state"
+import { createClient } from "@/lib/supabase/server"
+import type { Grade, Period, Settings, Student } from "@/lib/supabase/types"
+import { bandingkanPeriode } from "@/lib/hitung/periode"
+import { isValidKelasNumber } from "@/lib/validators/siswa"
+import { GradesTableView } from "@/features/nilai/grades-table-view"
 
 export const metadata: Metadata = {
   title: "Nilai Siswa — LMS Guru PJOK",
 }
 
-export default function NilaiSiswaPage() {
-  return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Nilai Siswa"
-        description="Input dan kelola Nilai Praktek, UH, ASTS, ASAS, Nilai Akhir, dan Predikat per periode."
-      />
+export interface NilaiSiswaPageProps {
+  searchParams: Promise<{ kelas?: string }>
+}
 
-      <EmptyState
-        icon={Award}
-        title="Tabel Nilai Siswa Belum Tersedia"
-        description="Pilih kelas dan periode untuk menampilkan serta menginput nilai siswa secara otomatis."
-      />
-    </div>
+export default async function NilaiSiswaPage({
+  searchParams,
+}: NilaiSiswaPageProps) {
+  const resolvedSearchParams = await searchParams
+  const rawKelas = Number(resolvedSearchParams?.kelas)
+  const initialKelas = isValidKelasNumber(rawKelas) ? rawKelas : 1
+
+  let initialPeriods: Period[] | undefined = undefined
+  let initialSettings: Settings | null = null
+  let initialStudents: Student[] | undefined = undefined
+  let initialGrades: Grade[] | undefined = undefined
+
+  try {
+    const supabase = await createClient()
+    const [periodsRes, settingsRes, studentsRes] = await Promise.all([
+      supabase
+        .from("periods")
+        .select("*")
+        .order("tahun_mulai", { ascending: true }),
+      supabase.from("settings").select("*").limit(1).maybeSingle(),
+      supabase
+        .from("students")
+        .select("*")
+        .eq("kelas", initialKelas)
+        .order("nama", { ascending: true }),
+    ])
+
+    if (periodsRes.data) {
+      initialPeriods = [...periodsRes.data].sort(bandingkanPeriode)
+    }
+    if (settingsRes.data) {
+      initialSettings = settingsRes.data
+    }
+    if (studentsRes.data) {
+      initialStudents = studentsRes.data
+    }
+
+    const activePeriod =
+      initialPeriods?.find((p) => p.is_active) ?? initialPeriods?.[0] ?? null
+
+    if (activePeriod) {
+      const gradesRes = await supabase
+        .from("grades")
+        .select("*")
+        .eq("period_id", activePeriod.id)
+
+      if (gradesRes.data) {
+        initialGrades = gradesRes.data
+      }
+    }
+  } catch {
+    // Fallback aman bila koneksi database belum tersedia
+  }
+
+  return (
+    <GradesTableView
+      initialKelas={initialKelas}
+      initialPeriods={initialPeriods}
+      initialSettings={initialSettings}
+      initialStudents={initialStudents}
+      initialGrades={initialGrades}
+    />
   )
 }
