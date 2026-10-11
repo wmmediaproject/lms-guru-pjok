@@ -245,6 +245,10 @@ export interface Database {
           executed_at: string
         }
       }
+      ensure_admin_profile: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

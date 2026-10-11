@@ -13,6 +13,7 @@ import {
   periodeSchema,
   weightSettingsSchema,
 } from "@/lib/validators/pengaturan"
+import { ensureAdminProfile } from "@/lib/supabase/sync-admin-profile"
 
 export interface ActionResult<T = undefined> {
   success: boolean
@@ -32,6 +33,7 @@ export async function tambahPeriodeAction(
   }
 
   const supabase = await createClient()
+  await ensureAdminProfile(supabase)
   const { tahun_mulai, semester } = parsed.data
   const nama = namaPeriode(tahun_mulai, semester)
 
@@ -123,6 +125,7 @@ export async function hapusPeriodeAction(id: string): Promise<ActionResult> {
   }
 
   const supabase = await createClient()
+  await ensureAdminProfile(supabase)
 
   // 1. Cek apakah periode sudah memiliki nilai di tabel grades
   const { count: gradeCount, error: gradeCheckErr } = await supabase
@@ -188,6 +191,7 @@ export async function jadikanPeriodeAktifAction(
   }
 
   const supabase = await createClient()
+  await ensureAdminProfile(supabase)
 
   const { error: rpcError } = await supabase.rpc("set_active_period", {
     p_period_id: id,
@@ -208,6 +212,7 @@ export async function buatPeriodeBerikutnyaAction(): Promise<
   ActionResult<Period>
 > {
   const supabase = await createClient()
+  await ensureAdminProfile(supabase)
 
   const { data: existing, error: fetchError } = await supabase
     .from("periods")
@@ -264,6 +269,7 @@ export async function simpanPenilaianAction(
   }
 
   const supabase = await createClient()
+  await ensureAdminProfile(supabase)
   const { bobot_praktek, bobot_uh, bobot_asts, bobot_asas, kkm } = parsed.data
 
   const { data: existing } = await supabase
@@ -333,6 +339,7 @@ export async function simpanTampilanAction(
   }
 
   const supabase = await createClient()
+  await ensureAdminProfile(supabase)
   const namaSekolahClean = parsed.data.nama_sekolah?.trim() || null
 
   const { data: existing } = await supabase
