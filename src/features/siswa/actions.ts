@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
+import { ensureAdminProfile } from "@/lib/supabase/sync-admin-profile"
 import type { Student } from "@/lib/supabase/types"
 import { studentSchema } from "@/lib/validators/siswa"
 
@@ -23,6 +24,7 @@ export async function tambahSiswaAction(
   }
 
   const supabase = await createClient()
+  await ensureAdminProfile(supabase)
   const { nisn, nama, kelas, jenis_kelamin } = parsed.data
 
   const { data, error } = await supabase
@@ -70,6 +72,7 @@ export async function ubahSiswaAction(
   }
 
   const supabase = await createClient()
+  await ensureAdminProfile(supabase)
   const { nisn, nama, kelas, jenis_kelamin } = parsed.data
 
   const { data, error } = await supabase
@@ -133,6 +136,7 @@ export async function hapusSiswaAction(id: string): Promise<SiswaActionResult> {
   }
 
   const supabase = await createClient()
+  await ensureAdminProfile(supabase)
   const { error } = await supabase.from("students").delete().eq("id", id)
 
   if (error) {
@@ -209,6 +213,7 @@ export async function imporSiswaCsvAction(
   }
 
   const supabase = await createClient()
+  await ensureAdminProfile(supabase)
 
   // 1. Coba jalankan melalui RPC satu transaksi `upsert_students_csv`
   const { data: rpcData, error: rpcError } = await supabase.rpc(

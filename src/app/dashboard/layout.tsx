@@ -1,6 +1,7 @@
 import * as React from "react"
 import { cookies } from "next/headers"
 import { createClient } from "@/lib/supabase/server"
+import { ensureAdminProfile } from "@/lib/supabase/sync-admin-profile"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/shared/app-sidebar"
 import { DashboardHeader } from "@/components/shared/dashboard-header"
@@ -22,6 +23,7 @@ export default async function DashboardLayout({
 
   try {
     const supabase = await createClient()
+    await ensureAdminProfile(supabase)
 
     const [userRes, settingsRes, periodRes] = await Promise.all([
       supabase.auth.getUser(),

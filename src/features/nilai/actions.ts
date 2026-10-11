@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
+import { ensureAdminProfile } from "@/lib/supabase/sync-admin-profile"
 import type { Grade } from "@/lib/supabase/types"
 import { upsertGradeSchema } from "@/lib/validators/nilai"
 
@@ -28,6 +29,7 @@ export async function simpanNilaiSiswaAction(
   }
 
   const supabase = await createClient()
+  await ensureAdminProfile(supabase)
   const {
     student_id,
     period_id,

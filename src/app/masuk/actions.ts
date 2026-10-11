@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { ensureAdminProfile } from "@/lib/supabase/sync-admin-profile"
 import { loginSchema } from "@/lib/validators/auth"
 
 export type AuthActionResult = {
@@ -33,6 +34,8 @@ export async function masukAction(rawInput: unknown): Promise<AuthActionResult> 
       error: "Email atau kata sandi salah",
     }
   }
+
+  await ensureAdminProfile(supabase)
 
   redirect("/dashboard")
 }
