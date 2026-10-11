@@ -2,12 +2,9 @@ import * as React from "react"
 import { cookies } from "next/headers"
 import { createClient } from "@/lib/supabase/server"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import {
-  AppSidebar,
-  SIDEBAR_STORAGE_KEY,
-  parseSidebarCookie,
-} from "@/components/shared/app-sidebar"
+import { AppSidebar } from "@/components/shared/app-sidebar"
 import { DashboardHeader } from "@/components/shared/dashboard-header"
+import { SIDEBAR_STORAGE_KEY, parseSidebarCookie } from "@/lib/sidebar-utils"
 
 export default async function DashboardLayout({
   children,

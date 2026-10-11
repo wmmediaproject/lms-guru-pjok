@@ -1,13 +1,13 @@
 import * as React from "react"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen, fireEvent } from "@testing-library/react"
+import { AppSidebar } from "./app-sidebar"
 import {
-  AppSidebar,
   KELAS_LIST,
   SIDEBAR_STORAGE_KEY,
+  getBreadcrumbItems,
   parseSidebarCookie,
-} from "./app-sidebar"
-import { getBreadcrumbItems } from "./dashboard-header"
+} from "@/lib/sidebar-utils"
 import { PageHeader } from "./page-header"
 import { EmptyState } from "./empty-state"
 import { SidebarProvider } from "@/components/ui/sidebar"

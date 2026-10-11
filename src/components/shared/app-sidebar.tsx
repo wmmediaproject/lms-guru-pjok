@@ -32,19 +32,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
-
-export const SIDEBAR_STORAGE_KEY = "sidebar_state"
-export const KELAS_LIST = [1, 2, 3, 4, 5, 6] as const
-
-/**
- * Pure helper to parse the server-side `sidebar_state` cookie value.
- * Defaults to `true` (expanded) when cookie is not yet set.
- */
-export function parseSidebarCookie(cookieValue?: string): boolean {
-  if (cookieValue === "false") return false
-  if (cookieValue === "true") return true
-  return true
-}
+import { KELAS_LIST, SIDEBAR_STORAGE_KEY } from "@/lib/sidebar-utils"
 
 export interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   namaSekolah?: string | null
