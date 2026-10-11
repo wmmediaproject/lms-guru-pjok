@@ -190,7 +190,31 @@ export interface Database {
       }
     }
     Views: {
-      [_ in never]: never
+      dashboard_student_summary: {
+        Row: {
+          kelas: number
+          total_aktif: number
+          total_laki: number
+          total_perempuan: number
+        }
+        Relationships: []
+      }
+      dashboard_grade_stats: {
+        Row: {
+          period_id: string
+          kelas: number
+          avg_praktek: number | null
+          avg_uh: number | null
+          avg_asts: number | null
+          avg_asas: number | null
+          avg_nilai_akhir: number | null
+          jumlah_tuntas: number
+          jumlah_belum_tuntas: number
+          jumlah_sudah_ada_nilai: number
+          jumlah_lengkap: number
+        }
+        Relationships: []
+      }
     }
     Functions: {
       is_admin: {
@@ -245,6 +269,26 @@ export interface Database {
           executed_at: string
         }
       }
+      get_dashboard_summary: {
+        Args: {
+          p_period_id: string
+        }
+        Returns: {
+          kelas: number
+          total_aktif: number
+          total_laki: number
+          total_perempuan: number
+          jumlah_lengkap: number
+          jumlah_belum: number
+          avg_praktek: number
+          avg_uh: number
+          avg_asts: number
+          avg_asas: number
+          avg_nilai_akhir: number
+          jumlah_tuntas: number
+          jumlah_belum_tuntas: number
+        }[]
+      }
       ensure_admin_profile: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -276,3 +320,6 @@ export type Settings = Database['public']['Tables']['settings']['Row']
 export type SettingsUpdate = Database['public']['Tables']['settings']['Update']
 
 export type Profile = Database['public']['Tables']['profiles']['Row']
+
+export type DashboardKelasRow =
+  Database['public']['Functions']['get_dashboard_summary']['Returns'][number]
