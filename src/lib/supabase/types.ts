@@ -191,6 +191,32 @@ export interface Database {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      set_active_period: {
+        Args: {
+          p_period_id: string
+        }
+        Returns: undefined
+      }
+      hitung_nilai_akhir: {
+        Args: {
+          p_praktek: number | null
+          p_uh: number | null
+          p_asts: number | null
+          p_asas: number | null
+          p_bobot_praktek: number
+          p_bobot_uh: number
+          p_bobot_asts: number
+          p_bobot_asas: number
+        }
+        Returns: number | null
+      }
+      tentukan_predikat: {
+        Args: {
+          p_nilai_akhir: number | null
+          p_kkm: number
+        }
+        Returns: string | null
+      }
     }
     Enums: {
       [_ in never]: never

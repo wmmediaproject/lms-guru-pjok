@@ -3,9 +3,10 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { CalendarDays, LogOut, School, Settings, User } from "lucide-react"
+import { LogOut, School, Settings, User } from "lucide-react"
 
 import { keluarAction } from "@/app/masuk/actions"
+import { PeriodSelect } from "@/components/shared/period-select"
 import { ThemeToggle } from "@/components/shared/theme-toggle"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -101,23 +102,8 @@ export function DashboardHeader({
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
-        {/* Slot Pemilih Periode (diisi komponen PeriodSelect pada Fase 3) */}
         <div data-slot="period-selector-slot" className="flex items-center">
-          {periodSlot ?? (
-            <Badge
-              variant="outline"
-              className="flex items-center gap-1.5 border-primary/30 bg-primary/5 px-2.5 py-1 text-xs font-medium text-foreground"
-              aria-label="Periode aktif saat ini"
-            >
-              <CalendarDays
-                className="h-3.5 w-3.5 text-primary shrink-0"
-                aria-hidden="true"
-              />
-              <span className="max-w-36 sm:max-w-none truncate">
-                {activePeriodName || "Semester Ganjil 2026-2027"}
-              </span>
-            </Badge>
-          )}
+          {periodSlot ?? <PeriodSelect fallbackName={activePeriodName} />}
         </div>
 
         <ThemeToggle />
