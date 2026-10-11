@@ -1,0 +1,7 @@
+allowBuilds:
+  core-js: true
+  sharp: true
+  unrs-resolver: true
+permissions:
+  '@tanstack/react-table':
+    skills: true
