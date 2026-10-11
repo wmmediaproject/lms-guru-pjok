@@ -82,7 +82,6 @@ export function ExportButton({
           .from("students")
           .select("*")
           .eq("kelas", kelas)
-          .eq("status", "aktif")
           .order("nama", { ascending: true }),
         supabase.from("grades").select("*").eq("period_id", periodId),
       ])
@@ -103,7 +102,6 @@ export function ExportButton({
       supabase
         .from("students")
         .select("*")
-        .eq("status", "aktif")
         .order("nama", { ascending: true }),
       supabase.from("grades").select("*").eq("period_id", periodId),
     ])

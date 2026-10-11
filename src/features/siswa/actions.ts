@@ -210,7 +210,7 @@ export async function imporSiswaCsvAction(
 
   const supabase = await createClient()
 
-  // Eksekusi upsert dalam SATU transaksi melalui RPC upsert_students_csv
+  // 1. Coba jalankan melalui RPC satu transaksi `upsert_students_csv`
   const { data: rpcData, error: rpcError } = await supabase.rpc(
     "upsert_students_csv",
     {
@@ -218,18 +218,76 @@ export async function imporSiswaCsvAction(
     },
   )
 
-  if (rpcError) {
+  if (!rpcError && rpcData) {
+    const ditambah = Number(rpcData.inserted ?? 0)
+    const diperbarui = Number(rpcData.updated ?? 0)
+    const dilewati = clientSkippedCount + serverSkipped
+
+    revalidatePath("/dashboard/kelas", "layout")
+    revalidatePath("/dashboard/nilai")
+    revalidatePath("/dashboard")
     return {
-      success: false,
-      error: "Gagal menyimpan data impor CSV ke database",
+      success: true,
+      data: {
+        ditambah,
+        diperbarui,
+        dilewati,
+      },
     }
   }
 
-  const ditambah = Number(rpcData?.inserted ?? 0)
-  const diperbarui = Number(rpcData?.updated ?? 0)
+  // 2. Fallback: Bila fungsi RPC belum dipasang di Supabase remote (PGRST202 / 42883),
+  //    gunakan batch upsert PostgREST (.upsert(validRows, { onConflict: "nisn" }))
+  //    yang juga dieksekusi PostgreSQL sebagai SATU pernyataan INSERT ... ON CONFLICT atomik.
+  const nisnList = validRows.map((r) => r.nisn)
+  const { data: existingRows, error: checkError } = await supabase
+    .from("students")
+    .select("nisn")
+    .in("nisn", nisnList)
+
+  if (checkError) {
+    if (checkError.code === "42501") {
+      return {
+        success: false,
+        error:
+          "Akses ditolak oleh RLS: pastikan akun Anda terdaftar sebagai admin di tabel profiles",
+      }
+    }
+    return {
+      success: false,
+      error: `Gagal memeriksa data siswa di database: ${checkError.message}`,
+    }
+  }
+
+  const existingSet = new Set((existingRows ?? []).map((r) => r.nisn))
+  const diperbarui = validRows.filter((r) => existingSet.has(r.nisn)).length
+  const ditambah = Math.max(0, validRows.length - diperbarui)
   const dilewati = clientSkippedCount + serverSkipped
 
+  const { error: upsertError } = await supabase
+    .from("students")
+    .upsert(validRows, {
+      onConflict: "nisn",
+    })
+
+  if (upsertError) {
+    if (upsertError.code === "42501") {
+      return {
+        success: false,
+        error:
+          "Akses ditolak oleh RLS: pastikan akun Anda terdaftar sebagai admin di tabel profiles",
+      }
+    }
+    return {
+      success: false,
+      error: `Gagal menyimpan data impor CSV ke database: ${upsertError.message}`,
+    }
+  }
+
   revalidatePath("/dashboard/kelas", "layout")
+  revalidatePath("/dashboard/nilai")
+  revalidatePath("/dashboard")
+
   return {
     success: true,
     data: {

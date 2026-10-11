@@ -9,6 +9,7 @@ import {
 } from "@/lib/csv/parse"
 
 const mockRpc = vi.fn()
+const mockFrom = vi.fn()
 
 vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
@@ -17,6 +18,7 @@ vi.mock("next/cache", () => ({
 vi.mock("@/lib/supabase/server", () => ({
   createClient: vi.fn(async () => ({
     rpc: mockRpc,
+    from: mockFrom,
   })),
 }))
 
@@ -262,6 +264,46 @@ describe("imporSiswaCsvAction (upsert satu transaksi berdasarkan NISN)", () => {
         ditambah: 0,
         diperbarui: 2,
         dilewati: 1,
+      })
+    }
+  })
+
+  it("tetap berhasil menyimpan lewat fallback batch upsert atomik apabila RPC upsert_students_csv belum dipasang di database remote", async () => {
+    const { imporSiswaCsvAction } = await import("@/features/siswa/actions")
+
+    // Simulasi RPC belum ada di schema cache Supabase remote (PGRST202)
+    mockRpc.mockResolvedValueOnce({
+      data: null,
+      error: {
+        code: "PGRST202",
+        message: "Could not find the function public.upsert_students_csv",
+      },
+    })
+
+    const mockUpsertBatch = vi.fn().mockResolvedValue({ error: null })
+    mockFrom.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        in: vi.fn().mockResolvedValue({
+          data: [{ nisn: "0012345678" }], // 1 sudah ada, 1 baru
+          error: null,
+        }),
+      }),
+      upsert: mockUpsertBatch,
+    })
+
+    const rows = [
+      { nisn: "0012345678", nama: "Budi Santoso", kelas: 1, jenis_kelamin: "L" as const },
+      { nisn: "0012345679", nama: "Siti Aminah", kelas: 1, jenis_kelamin: "P" as const },
+    ]
+
+    const res = await imporSiswaCsvAction(rows, 0)
+    expect(res.success).toBe(true)
+    expect(mockUpsertBatch).toHaveBeenCalledWith(rows, { onConflict: "nisn" })
+    if (res.success) {
+      expect(res.data).toEqual({
+        ditambah: 1,
+        diperbarui: 1,
+        dilewati: 0,
       })
     }
   })
