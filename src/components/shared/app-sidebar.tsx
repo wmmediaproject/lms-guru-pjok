@@ -8,6 +8,7 @@ import {
   Award,
   ChevronDown,
   GraduationCap,
+  Home,
   LayoutDashboard,
   Settings,
   Users,
@@ -46,7 +47,7 @@ export function AppSidebar({
 }: AppSidebarProps) {
   const pathname = usePathname()
   const { open, setOpen, isMobile, setOpenMobile } = useSidebar()
-  const [kelasExpanded, setKelasExpanded] = React.useState(true)
+  const [kelasExpanded, setKelasExpanded] = React.useState(false)
 
   const didMountRef = React.useRef(false)
 
@@ -78,6 +79,7 @@ export function AppSidebar({
     }
   }, [hasServerCookie, open, setOpen])
 
+  const isHomeActive = pathname === "/"
   const isDashboardActive = pathname === "/dashboard"
   const isKelasActive = pathname.startsWith("/dashboard/kelas")
   const isNilaiActive = pathname.startsWith("/dashboard/nilai")
@@ -125,6 +127,24 @@ export function AppSidebar({
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              {/* 0. Beranda */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isHomeActive}
+                  tooltip="Beranda"
+                  className={cn(
+                    isHomeActive &&
+                      "bg-primary/15 text-primary font-semibold hover:bg-primary/20 hover:text-primary",
+                  )}
+                >
+                  <Link href="/" onClick={handleLinkClick}>
+                    <Home aria-hidden="true" />
+                    <span>Beranda</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
               {/* 1. Dashboard */}
               <SidebarMenuItem>
                 <SidebarMenuButton

@@ -11,7 +11,6 @@ import {
   Loader2,
   RotateCcw,
   Search,
-  ShieldAlert,
   XCircle,
 } from "lucide-react"
 import { toast } from "sonner"
@@ -540,24 +539,6 @@ export function GradesTableView({
         }
       />
 
-      {hasUnsavedChanges && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="flex items-center gap-2.5 rounded-lg border border-primary/40 bg-primary/10 px-4 py-2.5 text-xs font-medium text-foreground"
-        >
-          <ShieldAlert
-            className="h-4 w-4 text-primary shrink-0"
-            aria-hidden="true"
-          />
-          <span>
-            Ada perubahan nilai yang sedang disimpan atau belum tersimpan. Jangan
-            menutup halaman sebelum semua baris berstatus{" "}
-            <strong>Tersimpan ✓</strong>.
-          </span>
-        </div>
-      )}
-
       <Card className="border-border/80">
         <CardContent className="p-4 space-y-4">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -644,8 +625,8 @@ export function GradesTableView({
               }
             />
           ) : (
-            <div className="overflow-x-auto rounded-lg border border-border">
-              <Table>
+            <div className="w-full overflow-x-auto rounded-lg border border-border">
+              <Table className="min-w-[1050px] w-full">
                 <TableHeader>
                   <TableRow className="bg-muted/40">
                     <TableHead className="sticky left-0 z-20 bg-muted/95 backdrop-blur-xs min-w-44 font-semibold">

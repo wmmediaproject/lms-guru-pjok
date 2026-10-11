@@ -66,7 +66,7 @@ describe("Fase 2 — Layout Dashboard, Sidebar & Komponen Shared", () => {
   })
 
   describe("2. Menu Sidebar & Submenu Kelas 1–6", () => {
-    it("menampilkan menu utama (Dashboard, Kelola Kelas, Nilai Siswa, Pengaturan) dan submenu Kelas 1–6", () => {
+    it("menampilkan menu utama (Beranda, Dashboard, Kelola Kelas, Nilai Siswa, Pengaturan)", () => {
       render(
         <TooltipProvider>
           <SidebarProvider defaultOpen={true}>
@@ -77,17 +77,14 @@ describe("Fase 2 — Layout Dashboard, Sidebar & Komponen Shared", () => {
 
       expect(screen.getByText("LMS GURU PJOK")).toBeDefined()
       expect(screen.getByText("SDN 01 Nusantara")).toBeDefined()
+      expect(screen.getByText("Beranda")).toBeDefined()
       expect(screen.getByText("Dashboard")).toBeDefined()
       expect(screen.getByText("Kelola Kelas")).toBeDefined()
       expect(screen.getByText("Nilai Siswa")).toBeDefined()
       expect(screen.getByText("Pengaturan")).toBeDefined()
-
-      for (const kelas of KELAS_LIST) {
-        expect(screen.getByText(`Kelas ${kelas}`)).toBeDefined()
-      }
     })
 
-    it("dapat menyembunyikan dan menampilkan kembali submenu Kelas 1–6", () => {
+    it("secara default submenu Kelas 1–6 tertutup dan dapat dibuka/ditutup melalui tombol toggle", () => {
       render(
         <TooltipProvider>
           <SidebarProvider defaultOpen={true}>
@@ -96,15 +93,22 @@ describe("Fase 2 — Layout Dashboard, Sidebar & Komponen Shared", () => {
         </TooltipProvider>,
       )
 
+      // Default tertutup: submenu Kelas 1 belum tampil di DOM
+      expect(screen.queryByText("Kelas 1")).toBeNull()
+
+      // Buka dropdown submenu
+      const expandBtn = screen.getByLabelText("Tampilkan daftar kelas")
+      fireEvent.click(expandBtn)
+
+      for (const kelas of KELAS_LIST) {
+        expect(screen.getByText(`Kelas ${kelas}`)).toBeDefined()
+      }
+
+      // Tutup kembali
       const toggleBtn = screen.getByLabelText("Sembunyikan daftar kelas")
       fireEvent.click(toggleBtn)
 
       expect(screen.queryByText("Kelas 1")).toBeNull()
-
-      const expandBtn = screen.getByLabelText("Tampilkan daftar kelas")
-      fireEvent.click(expandBtn)
-
-      expect(screen.getByText("Kelas 1")).toBeDefined()
     })
   })
 
