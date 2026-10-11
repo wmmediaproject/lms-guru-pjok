@@ -43,6 +43,7 @@ export interface Database {
           nama: string
           kelas: number
           jenis_kelamin: 'L' | 'P' | null
+          status?: 'aktif' | 'lulus'
           created_at: string
           updated_at: string
         }
@@ -52,6 +53,7 @@ export interface Database {
           nama: string
           kelas: number
           jenis_kelamin?: 'L' | 'P' | null
+          status?: 'aktif' | 'lulus'
           created_at?: string
           updated_at?: string
         }
@@ -61,6 +63,7 @@ export interface Database {
           nama?: string
           kelas?: number
           jenis_kelamin?: 'L' | 'P' | null
+          status?: 'aktif' | 'lulus'
           created_at?: string
           updated_at?: string
         }
@@ -135,6 +138,7 @@ export interface Database {
           bobot_uh: number
           bobot_asts: number
           bobot_asas: number
+          last_promoted_at?: string | null
           updated_at: string
         }
         Insert: {
@@ -145,6 +149,7 @@ export interface Database {
           bobot_uh?: number
           bobot_asts?: number
           bobot_asas?: number
+          last_promoted_at?: string | null
           updated_at?: string
         }
         Update: {
@@ -155,6 +160,7 @@ export interface Database {
           bobot_uh?: number
           bobot_asts?: number
           bobot_asas?: number
+          last_promoted_at?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -224,6 +230,19 @@ export interface Database {
         Returns: {
           inserted: number
           updated: number
+        }
+      }
+      promote_students_massal: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          promoted_1_to_2: number
+          promoted_2_to_3: number
+          promoted_3_to_4: number
+          promoted_4_to_5: number
+          promoted_5_to_6: number
+          graduated_kelas_6: number
+          total_affected: number
+          executed_at: string
         }
       }
     }

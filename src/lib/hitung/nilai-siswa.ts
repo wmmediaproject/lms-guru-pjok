@@ -56,9 +56,9 @@ export function gabungkanSiswaDanNilai(
     }
   }
 
-  const sortedStudents = [...students].sort((a, b) =>
-    a.nama.localeCompare(b.nama, "id-ID"),
-  )
+  const sortedStudents = students
+    .filter((s) => s.status !== "lulus")
+    .sort((a, b) => a.nama.localeCompare(b.nama, "id-ID"))
 
   return sortedStudents.map((student) => {
     const grade = gradeByStudentId.get(student.id)

@@ -58,12 +58,20 @@ export function ClassStudentsView({
 
   const [formDialogOpen, setFormDialogOpen] = React.useState(false)
   const [csvDialogOpen, setCsvDialogOpen] = React.useState(false)
+  const [showGraduated, setShowGraduated] = React.useState(false)
   const [editingStudent, setEditingStudent] =
     React.useState<StudentWithGradesCount | null>(null)
   const [deletingStudent, setDeletingStudent] =
     React.useState<StudentWithGradesCount | null>(null)
   const [deletingGradesCount, setDeletingGradesCount] = React.useState(0)
   const [isDeleting, startDeleteTransition] = React.useTransition()
+
+  const activeStudents = React.useMemo(
+    () => students.filter((s) => s.status !== "lulus"),
+    [students],
+  )
+  const graduatedCount = students.length - activeStudents.length
+  const displayedStudents = showGraduated ? students : activeStudents
 
   const handleOpenAdd = () => {
     setEditingStudent(null)
@@ -195,9 +203,24 @@ export function ClassStudentsView({
     <div className="space-y-6">
       <PageHeader
         title={`Kelas ${kelas}`}
-        description={`Daftar siswa Kelas ${kelas} (${students.length} siswa terdaftar).`}
+        description={`Daftar siswa aktif Kelas ${kelas} (${activeStudents.length} siswa aktif terdaftar).`}
         actions={
           <>
+            {graduatedCount > 0 && (
+              <Button
+                type="button"
+                variant={showGraduated ? "secondary" : "outline"}
+                onClick={() => setShowGraduated((prev) => !prev)}
+                className="gap-1.5 cursor-pointer"
+              >
+                <GraduationCap className="h-4 w-4" aria-hidden="true" />
+                <span>
+                  {showGraduated
+                    ? "Sembunyikan Alumni Lulus"
+                    : `Tampilkan Alumni Lulus (${graduatedCount})`}
+                </span>
+              </Button>
+            )}
             <ClassSelect
               value={kelas}
               onValueChange={(nextKelas) => {
@@ -228,7 +251,7 @@ export function ClassStudentsView({
         }
       />
 
-      {students.length === 0 ? (
+      {displayedStudents.length === 0 ? (
         <EmptyState
           icon={GraduationCap}
           title={`Belum Ada Siswa di Kelas ${kelas}`}
@@ -258,7 +281,7 @@ export function ClassStudentsView({
       ) : (
         <DataTable
           columns={columns}
-          data={students}
+          data={displayedStudents}
           searchPlaceholder="Cari nama atau NISN siswa..."
           emptyMessage="Tidak ada siswa yang cocok dengan kata kunci pencarian."
         />

@@ -239,3 +239,56 @@ export async function imporSiswaCsvAction(
     },
   }
 }
+
+export interface NaikKelasMassalResult {
+  promoted_1_to_2: number
+  promoted_2_to_3: number
+  promoted_3_to_4: number
+  promoted_4_to_5: number
+  promoted_5_to_6: number
+  graduated_kelas_6: number
+  total_affected: number
+  executed_at: string
+}
+
+export async function naikKelasMassalAction(
+  konfirmasi: string,
+): Promise<SiswaActionResult<NaikKelasMassalResult>> {
+  if (konfirmasi.trim() !== "NAIK KELAS") {
+    return {
+      success: false,
+      error: 'Ketik "NAIK KELAS" secara persis untuk mengonfirmasi kenaikan kelas massal',
+    }
+  }
+
+  const supabase = await createClient()
+
+  const { data, error } = await supabase.rpc("promote_students_massal")
+
+  if (error || !data) {
+    return {
+      success: false,
+      error:
+        "Gagal menjalankan kenaikan kelas massal. Transaksi dibatalkan dan tidak ada data yang berubah.",
+    }
+  }
+
+  revalidatePath("/dashboard/kelas", "layout")
+  revalidatePath("/dashboard/nilai")
+  revalidatePath("/dashboard/pengaturan")
+  revalidatePath("/dashboard")
+
+  return {
+    success: true,
+    data: {
+      promoted_1_to_2: Number(data.promoted_1_to_2 ?? 0),
+      promoted_2_to_3: Number(data.promoted_2_to_3 ?? 0),
+      promoted_3_to_4: Number(data.promoted_3_to_4 ?? 0),
+      promoted_4_to_5: Number(data.promoted_4_to_5 ?? 0),
+      promoted_5_to_6: Number(data.promoted_5_to_6 ?? 0),
+      graduated_kelas_6: Number(data.graduated_kelas_6 ?? 0),
+      total_affected: Number(data.total_affected ?? 0),
+      executed_at: String(data.executed_at ?? new Date().toISOString()),
+    },
+  }
+}

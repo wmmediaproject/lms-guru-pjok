@@ -36,6 +36,7 @@ import { GradeCell } from "@/features/nilai/grade-cell"
 import { KeteranganCell } from "@/features/nilai/keterangan-cell"
 import { ClassSelect } from "@/components/shared/class-select"
 import { EmptyState } from "@/components/shared/empty-state"
+import { ExportButton } from "@/components/shared/export-button"
 import { PageHeader } from "@/components/shared/page-header"
 import { PeriodSelect } from "@/components/shared/period-select"
 import {
@@ -527,6 +528,14 @@ export function GradesTableView({
               ariaLabel="Pilih kelas nilai siswa"
             />
             <PeriodSelect initialPeriods={initialPeriods} />
+            <ExportButton
+              kelas={selectedKelas}
+              periodId={selectedPeriodId}
+              namaPeriode={selectedPeriod?.nama ?? "Semester_Ganjil_2026-2027"}
+              namaSekolah={settings?.nama_sekolah ?? null}
+              kkm={kkmAktif}
+              currentClassRows={serverRows}
+            />
           </div>
         }
       />

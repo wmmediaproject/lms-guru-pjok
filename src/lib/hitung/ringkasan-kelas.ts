@@ -18,10 +18,14 @@ export interface ClassSummary {
  * Safe to invoke from both Server Components and Client Components.
  */
 export function hitungRingkasanKelas(
-  students: ReadonlyArray<Pick<Student, "kelas" | "jenis_kelamin">>,
+  students: ReadonlyArray<
+    Pick<Student, "kelas" | "jenis_kelamin"> & { status?: "aktif" | "lulus" }
+  >,
 ): ClassSummary[] {
   return KELAS_LIST.map((kelas) => {
-    const siswaKelas = students.filter((s) => Number(s.kelas) === kelas)
+    const siswaKelas = students.filter(
+      (s) => Number(s.kelas) === kelas && s.status !== "lulus",
+    )
     let laki_laki = 0
     let perempuan = 0
     let belum_diisi = 0

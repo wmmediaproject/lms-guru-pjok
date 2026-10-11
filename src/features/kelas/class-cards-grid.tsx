@@ -6,6 +6,7 @@ import {
   ArrowRight,
   FileSpreadsheet,
   GraduationCap,
+  TrendingUp,
   UserPlus,
   Users,
 } from "lucide-react"
@@ -15,6 +16,7 @@ import {
   type ClassSummary,
 } from "@/hooks/use-students"
 import { PageHeader } from "@/components/shared/page-header"
+import { NaikKelasDialog } from "@/features/kelas/naik-kelas-dialog"
 import { CsvImportDialog } from "@/features/siswa/csv-import-dialog"
 import { StudentFormDialog } from "@/features/siswa/student-form-dialog"
 import { Badge } from "@/components/ui/badge"
@@ -36,6 +38,7 @@ export function ClassCardsGrid({ initialSummaries }: ClassCardsGridProps) {
   const { data: summaries = [] } = useClassSummaries(initialSummaries)
   const [addDialogOpen, setAddDialogOpen] = React.useState(false)
   const [csvDialogOpen, setCsvDialogOpen] = React.useState(false)
+  const [naikKelasOpen, setNaikKelasOpen] = React.useState(false)
 
   const totalSeluruhSiswa = summaries.reduce((acc, s) => acc + s.total, 0)
 
@@ -43,9 +46,21 @@ export function ClassCardsGrid({ initialSummaries }: ClassCardsGridProps) {
     <div className="space-y-6">
       <PageHeader
         title="Kelola Kelas"
-        description={`Total ${totalSeluruhSiswa} siswa terdaftar pada Kelas 1 sampai Kelas 6. Pilih kelas untuk mengelola daftar siswa.`}
+        description={`Total ${totalSeluruhSiswa} siswa aktif terdaftar pada Kelas 1 sampai Kelas 6. Pilih kelas untuk mengelola daftar siswa.`}
         actions={
           <>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setNaikKelasOpen(true)}
+              className="gap-1.5 cursor-pointer"
+            >
+              <TrendingUp
+                className="h-4 w-4 text-primary"
+                aria-hidden="true"
+              />
+              <span>Naik Kelas Massal</span>
+            </Button>
             <Button
               type="button"
               variant="outline"
@@ -152,6 +167,12 @@ export function ClassCardsGrid({ initialSummaries }: ClassCardsGridProps) {
       <CsvImportDialog
         open={csvDialogOpen}
         onOpenChange={setCsvDialogOpen}
+      />
+
+      <NaikKelasDialog
+        open={naikKelasOpen}
+        onOpenChange={setNaikKelasOpen}
+        initialSummaries={initialSummaries}
       />
     </div>
   )
