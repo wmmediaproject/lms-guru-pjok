@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { createColumnHelper } from "@tanstack/react-table"
 import { useQueryClient } from "@tanstack/react-query"
 import {
+  FileSpreadsheet,
   GraduationCap,
   Pencil,
   Trash2,
@@ -29,6 +30,7 @@ import { PageHeader } from "@/components/shared/page-header"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { cekNilaiSiswaAction, hapusSiswaAction } from "./actions"
+import { CsvImportDialog } from "./csv-import-dialog"
 import { StudentFormDialog } from "./student-form-dialog"
 
 const columnHelper = createColumnHelper<
@@ -55,6 +57,7 @@ export function ClassStudentsView({
   )
 
   const [formDialogOpen, setFormDialogOpen] = React.useState(false)
+  const [csvDialogOpen, setCsvDialogOpen] = React.useState(false)
   const [editingStudent, setEditingStudent] =
     React.useState<StudentWithGradesCount | null>(null)
   const [deletingStudent, setDeletingStudent] =
@@ -206,6 +209,15 @@ export function ClassStudentsView({
             />
             <Button
               type="button"
+              variant="outline"
+              onClick={() => setCsvDialogOpen(true)}
+              className="gap-1.5 cursor-pointer"
+            >
+              <FileSpreadsheet className="h-4 w-4" aria-hidden="true" />
+              <span>Impor CSV</span>
+            </Button>
+            <Button
+              type="button"
               onClick={handleOpenAdd}
               className="gap-1.5 cursor-pointer"
             >
@@ -220,16 +232,27 @@ export function ClassStudentsView({
         <EmptyState
           icon={GraduationCap}
           title={`Belum Ada Siswa di Kelas ${kelas}`}
-          description={`Tambahkan siswa baru secara manual ke Kelas ${kelas}.`}
+          description={`Tambahkan siswa baru secara manual atau impor via CSV ke Kelas ${kelas}.`}
           action={
-            <Button
-              type="button"
-              onClick={handleOpenAdd}
-              className="gap-1.5 cursor-pointer"
-            >
-              <UserPlus className="h-4 w-4" aria-hidden="true" />
-              <span>Tambah Siswa Pertama</span>
-            </Button>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setCsvDialogOpen(true)}
+                className="gap-1.5 cursor-pointer"
+              >
+                <FileSpreadsheet className="h-4 w-4" aria-hidden="true" />
+                <span>Impor CSV</span>
+              </Button>
+              <Button
+                type="button"
+                onClick={handleOpenAdd}
+                className="gap-1.5 cursor-pointer"
+              >
+                <UserPlus className="h-4 w-4" aria-hidden="true" />
+                <span>Tambah Siswa Pertama</span>
+              </Button>
+            </div>
           }
         />
       ) : (
@@ -247,6 +270,8 @@ export function ClassStudentsView({
         defaultKelas={kelas}
         student={editingStudent}
       />
+
+      <CsvImportDialog open={csvDialogOpen} onOpenChange={setCsvDialogOpen} />
 
       <ConfirmDialog
         open={Boolean(deletingStudent)}

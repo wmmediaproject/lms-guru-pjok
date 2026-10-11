@@ -4,6 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import {
   ArrowRight,
+  FileSpreadsheet,
   GraduationCap,
   UserPlus,
   Users,
@@ -14,6 +15,7 @@ import {
   type ClassSummary,
 } from "@/hooks/use-students"
 import { PageHeader } from "@/components/shared/page-header"
+import { CsvImportDialog } from "@/features/siswa/csv-import-dialog"
 import { StudentFormDialog } from "@/features/siswa/student-form-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -33,6 +35,7 @@ export interface ClassCardsGridProps {
 export function ClassCardsGrid({ initialSummaries }: ClassCardsGridProps) {
   const { data: summaries = [] } = useClassSummaries(initialSummaries)
   const [addDialogOpen, setAddDialogOpen] = React.useState(false)
+  const [csvDialogOpen, setCsvDialogOpen] = React.useState(false)
 
   const totalSeluruhSiswa = summaries.reduce((acc, s) => acc + s.total, 0)
 
@@ -42,14 +45,28 @@ export function ClassCardsGrid({ initialSummaries }: ClassCardsGridProps) {
         title="Kelola Kelas"
         description={`Total ${totalSeluruhSiswa} siswa terdaftar pada Kelas 1 sampai Kelas 6. Pilih kelas untuk mengelola daftar siswa.`}
         actions={
-          <Button
-            type="button"
-            onClick={() => setAddDialogOpen(true)}
-            className="gap-1.5 cursor-pointer"
-          >
-            <UserPlus className="h-4 w-4" aria-hidden="true" />
-            <span>Tambah Siswa</span>
-          </Button>
+          <>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setCsvDialogOpen(true)}
+              className="gap-1.5 cursor-pointer"
+            >
+              <FileSpreadsheet
+                className="h-4 w-4 text-primary"
+                aria-hidden="true"
+              />
+              <span>Impor CSV</span>
+            </Button>
+            <Button
+              type="button"
+              onClick={() => setAddDialogOpen(true)}
+              className="gap-1.5 cursor-pointer"
+            >
+              <UserPlus className="h-4 w-4" aria-hidden="true" />
+              <span>Tambah Siswa</span>
+            </Button>
+          </>
         }
       />
 
@@ -130,6 +147,11 @@ export function ClassCardsGrid({ initialSummaries }: ClassCardsGridProps) {
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
         defaultKelas={1}
+      />
+
+      <CsvImportDialog
+        open={csvDialogOpen}
+        onOpenChange={setCsvDialogOpen}
       />
     </div>
   )

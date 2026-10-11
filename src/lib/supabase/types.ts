@@ -217,6 +217,15 @@ export interface Database {
         }
         Returns: string | null
       }
+      upsert_students_csv: {
+        Args: {
+          p_rows: Json
+        }
+        Returns: {
+          inserted: number
+          updated: number
+        }
+      }
     }
     Enums: {
       [_ in never]: never

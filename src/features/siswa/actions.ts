@@ -145,3 +145,97 @@ export async function hapusSiswaAction(id: string): Promise<SiswaActionResult> {
   revalidatePath("/dashboard/kelas", "layout")
   return { success: true }
 }
+
+export interface CsvImportSummaryResult {
+  ditambah: number
+  diperbarui: number
+  dilewati: number
+}
+
+export async function imporSiswaCsvAction(
+  rawRows: unknown,
+  clientSkippedCount = 0,
+): Promise<SiswaActionResult<CsvImportSummaryResult>> {
+  if (!Array.isArray(rawRows)) {
+    return {
+      success: false,
+      error: "Format data impor tidak valid",
+    }
+  }
+
+  if (rawRows.length === 0) {
+    return {
+      success: false,
+      error: "Tidak ada baris siswa yang valid untuk diimpor",
+    }
+  }
+
+  if (rawRows.length > 1000) {
+    return {
+      success: false,
+      error: "Jumlah baris melebihi batas maksimal 1.000 baris per impor",
+    }
+  }
+
+  const seenNisn = new Set<string>()
+  const validRows: Array<{
+    nisn: string
+    nama: string
+    kelas: number
+    jenis_kelamin: "L" | "P" | null
+  }> = []
+  let serverSkipped = 0
+
+  for (const item of rawRows) {
+    const parsed = studentSchema.safeParse(item)
+    if (!parsed.success || seenNisn.has(parsed.data.nisn)) {
+      serverSkipped += 1
+      continue
+    }
+    seenNisn.add(parsed.data.nisn)
+    validRows.push({
+      nisn: parsed.data.nisn,
+      nama: parsed.data.nama,
+      kelas: parsed.data.kelas,
+      jenis_kelamin: parsed.data.jenis_kelamin ?? null,
+    })
+  }
+
+  if (validRows.length === 0) {
+    return {
+      success: false,
+      error: "Tidak ada baris siswa yang valid setelah pemeriksaan server",
+    }
+  }
+
+  const supabase = await createClient()
+
+  // Eksekusi upsert dalam SATU transaksi melalui RPC upsert_students_csv
+  const { data: rpcData, error: rpcError } = await supabase.rpc(
+    "upsert_students_csv",
+    {
+      p_rows: validRows,
+    },
+  )
+
+  if (rpcError) {
+    return {
+      success: false,
+      error: "Gagal menyimpan data impor CSV ke database",
+    }
+  }
+
+  const ditambah = Number(rpcData?.inserted ?? 0)
+  const diperbarui = Number(rpcData?.updated ?? 0)
+  const dilewati = clientSkippedCount + serverSkipped
+
+  revalidatePath("/dashboard/kelas", "layout")
+  return {
+    success: true,
+    data: {
+      ditambah,
+      diperbarui,
+      dilewati,
+    },
+  }
+}
