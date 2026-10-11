@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { GraduationCap } from "lucide-react"
-import { PageHeader } from "@/components/shared/page-header"
-import { EmptyState } from "@/components/shared/empty-state"
+import { createClient } from "@/lib/supabase/server"
+import type { StudentWithGradesCount } from "@/lib/hitung/ringkasan-kelas"
+import { ClassStudentsView } from "@/features/siswa/class-students-view"
 
 interface KelasDetailPageProps {
   params: Promise<{ kelas: string }>
@@ -25,18 +25,42 @@ export default async function KelasDetailPage({ params }: KelasDetailPageProps) 
     notFound()
   }
 
-  return (
-    <div className="space-y-6">
-      <PageHeader
-        title={`Kelas ${kelasNum}`}
-        description={`Daftar dan pengelolaan data siswa untuk Kelas ${kelasNum}.`}
-      />
+  let initialStudents: StudentWithGradesCount[] | undefined = undefined
 
-      <EmptyState
-        icon={GraduationCap}
-        title={`Belum Ada Siswa di Kelas ${kelasNum}`}
-        description={`Data siswa Kelas ${kelasNum} akan tampil di sini setelah modul pengelolaan siswa selesai.`}
-      />
-    </div>
+  try {
+    const supabase = await createClient()
+    const { data: students } = await supabase
+      .from("students")
+      .select("*")
+      .eq("kelas", kelasNum)
+      .order("nama", { ascending: true })
+
+    if (students) {
+      if (students.length === 0) {
+        initialStudents = []
+      } else {
+        const ids = students.map((s) => s.id)
+        const { data: gradesRows } = await supabase
+          .from("grades")
+          .select("student_id")
+          .in("student_id", ids)
+
+        const countMap = new Map<string, number>()
+        for (const g of gradesRows ?? []) {
+          countMap.set(g.student_id, (countMap.get(g.student_id) ?? 0) + 1)
+        }
+
+        initialStudents = students.map((s) => ({
+          ...s,
+          grades_count: countMap.get(s.id) ?? 0,
+        }))
+      }
+    }
+  } catch {
+    // Graceful fallback if DB is unreachable
+  }
+
+  return (
+    <ClassStudentsView kelas={kelasNum} initialStudents={initialStudents} />
   )
 }
