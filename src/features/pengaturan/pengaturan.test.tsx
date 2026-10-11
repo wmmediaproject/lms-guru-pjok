@@ -16,6 +16,10 @@ vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
 }))
 
+vi.mock("@/lib/supabase/sync-admin-profile", () => ({
+  ensureAdminProfile: vi.fn(async () => true),
+}))
+
 const mockFrom = vi.fn()
 const mockRpc = vi.fn()
 const mockUpdateUser = vi.fn()
