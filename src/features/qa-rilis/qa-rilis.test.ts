@@ -59,7 +59,7 @@ describe("Fase 10 — Audit QA, Keamanan, Aksesibilitas & Bahasa Indonesia", () 
         /REVOKE\s+ALL\s+ON\s+FUNCTION\s+public\.upsert_students_csv\(jsonb\)\s+FROM\s+PUBLIC,\s*anon/i,
       )
       expect(hardeningSql).toMatch(
-        /REVOKE\s+ALL\s+ON\s+FUNCTION\s+public\.promote_students_massal\(int\[\]\)\s+FROM\s+PUBLIC,\s*anon/i,
+        /REVOKE\s+ALL\s+ON\s+FUNCTION\s+public\.promote_students_massal\(\)\s+FROM\s+PUBLIC,\s*anon/i,
       )
     })
   })

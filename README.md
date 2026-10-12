@@ -73,6 +73,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 # Opsional (HANYA digunakan di server untuk sinkronisasi otomatis profil admin pertama)
 # Jangan pernah mengekspos kunci ini dengan awalan NEXT_PUBLIC_
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# Rahasia untuk mengamankan endpoint Vercel Cron (/api/keep-alive)
+CRON_SECRET=rahasia-acak-minimal-32-karakter
 ```
 
 ---
@@ -156,7 +159,7 @@ pnpm build
 
 ---
 
-## Panduan Deploy ke Vercel
+## Panduan Deploy ke Vercel & Keep-Alive Supabase
 
 1. Unggah repositori ini ke GitHub / GitLab / Bitbucket.
 2. Buka [Vercel Dashboard](https://vercel.com/new) dan impor repositori proyek.
@@ -164,7 +167,27 @@ pnpm build
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `SUPABASE_SERVICE_ROLE_KEY` *(opsional, hanya untuk server)*
+   - `CRON_SECRET` *(wajib untuk Vercel Cron Keep-Alive pada environment **Production**)*
 4. Klik **Deploy**. Setiap perubahan pada branch utama akan otomatis di-deploy oleh Vercel.
+
+### Konfigurasi Keep-Alive Supabase (`CRON_SECRET` & Vercel Cron)
+
+Proyek Supabase pada paket gratis (*Free Plan*) otomatis di-pause setelah 7 hari tanpa aktivitas. Repositori ini dilengkapi Route Handler `GET /api/keep-alive` dan jadwal **Vercel Cron Job** di `vercel.json` (`0 0 */5 * *` — setiap 5 hari sekali pukul 00:00 UTC) yang melakukan satu kueri baca ringan ke Supabase memakai `anon` key tanpa mematikan RLS.
+
+1. **Buat nilai acak untuk `CRON_SECRET`** di terminal lokal Anda:
+   ```bash
+   # Menggunakan OpenSSL
+   openssl rand -hex 32
+
+   # Atau menggunakan Node.js
+   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+   ```
+2. **Simpan di Vercel Environment Variables:**
+   - Buka proyek di **Vercel Dashboard** → **Settings** → **Environment Variables**.
+   - Tambahkan variabel bernama **`CRON_SECRET`** dengan nilai acak dari langkah 1, centang minimal environment **Production**, lalu simpan.
+3. **Catatan Penting Vercel Cron:**
+   - Vercel Cron **hanya berjalan pada deployment Production** (tidak dieksekusi pada *Preview* atau pengembangan lokal).
+   - Saat jadwal cron berjalan, Vercel otomatis mengirimkan header `Authorization: Bearer <CRON_SECRET>` ke `/api/keep-alive`. Permintaan tanpa header atau dengan token yang tidak cocok akan ditolak dengan status `401 Unauthorized`.
 
 ---
 

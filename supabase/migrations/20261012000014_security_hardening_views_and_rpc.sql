@@ -76,8 +76,8 @@ GRANT EXECUTE ON FUNCTION public.set_active_period(uuid) TO authenticated;
 REVOKE ALL ON FUNCTION public.upsert_students_csv(jsonb) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.upsert_students_csv(jsonb) TO authenticated;
 
-REVOKE ALL ON FUNCTION public.promote_students_massal(int[]) FROM PUBLIC, anon;
-GRANT EXECUTE ON FUNCTION public.promote_students_massal(int[]) TO authenticated;
+REVOKE ALL ON FUNCTION public.promote_students_massal() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.promote_students_massal() TO authenticated;
 
 REVOKE ALL ON FUNCTION public.ensure_admin_profile() FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.ensure_admin_profile() TO authenticated;

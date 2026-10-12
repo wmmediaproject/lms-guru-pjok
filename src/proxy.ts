@@ -3,6 +3,12 @@ import { NextResponse, type NextRequest } from "next/server"
 import type { Database } from "@/lib/supabase/types"
 
 export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  if (pathname === "/api/keep-alive" || pathname.startsWith("/api/keep-alive/")) {
+    return NextResponse.next({ request })
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -35,8 +41,6 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const { pathname } = request.nextUrl
-
   // Redirect unauthenticated users trying to access /dashboard/* to /masuk
   if (!user && pathname.startsWith("/dashboard")) {
     const loginUrl = request.nextUrl.clone()
@@ -58,11 +62,12 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except:
+     * - api/keep-alive (Vercel Cron keep-alive endpoint)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - public assets (.svg, .png, .jpg, .jpeg, .gif, .webp, sw.js, manifest)
      */
-    "/((?!_next/static|_next/image|favicon.ico|sw\\.js|manifest\\.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!api/keep-alive|_next/static|_next/image|favicon.ico|sw\\.js|manifest\\.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 }
