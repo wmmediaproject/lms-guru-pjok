@@ -665,7 +665,7 @@ export function GradesTableView({
                     <TableHead className="w-32 h-10 px-2 text-center align-middle font-semibold text-foreground">
                       Predikat
                     </TableHead>
-                    <TableHead className="min-w-56 h-10 px-3 align-middle font-semibold text-foreground">
+                    <TableHead className="min-w-72 h-10 px-3 align-middle font-semibold text-foreground">
                       Keterangan
                     </TableHead>
                     <TableHead className="w-36 h-10 px-3 text-center align-middle font-semibold text-foreground">
@@ -699,9 +699,9 @@ export function GradesTableView({
                     return (
                       <TableRow
                         key={row.student_id}
-                        className="group align-middle transition-colors hover:bg-muted/30"
+                        className="group align-middle transition-colors odd:bg-background even:bg-muted/40 hover:bg-muted/65"
                       >
-                        <TableCell className="static md:sticky md:left-0 z-10 bg-background group-hover:bg-muted/40 transition-colors font-medium min-w-44 py-2.5 px-3 align-middle border-r border-border/50">
+                        <TableCell className="static md:sticky md:left-0 z-10 bg-background group-even:bg-[color-mix(in_oklch,var(--background),var(--muted)_40%)] group-hover:bg-[color-mix(in_oklch,var(--background),var(--muted)_65%)] transition-colors font-medium min-w-44 py-2.5 px-3 align-middle border-r border-border/50">
                           <div className="flex flex-col justify-center gap-0.5">
                             <span className="text-sm font-semibold leading-tight text-foreground">
                               {row.nama}
