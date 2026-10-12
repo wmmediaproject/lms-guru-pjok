@@ -15,6 +15,9 @@ export const periodeSchema = z.object({
 
 export type PeriodeInput = z.infer<typeof periodeSchema>
 
+const roundTwoDecimals = (val: number) =>
+  Math.round((val + Number.EPSILON) * 100) / 100
+
 const bobotField = (label: string) =>
   z
     .number({
@@ -22,6 +25,7 @@ const bobotField = (label: string) =>
     })
     .min(0, `${label} minimal 0%`)
     .max(100, `${label} maksimal 100%`)
+    .transform(roundTwoDecimals)
 
 export const weightSettingsSchema = z
   .object({
@@ -34,18 +38,17 @@ export const weightSettingsSchema = z
         error: "KKM harus berupa angka",
       })
       .min(0, "KKM minimal 0")
-      .max(100, "KKM maksimal 100"),
+      .max(100, "KKM maksimal 100")
+      .transform(roundTwoDecimals),
   })
   .refine(
     (data) => {
-      const total =
-        Math.round(
-          (data.bobot_praktek +
-            data.bobot_uh +
-            data.bobot_asts +
-            data.bobot_asas) *
-            100,
-        ) / 100
+      const total = roundTwoDecimals(
+        data.bobot_praktek +
+          data.bobot_uh +
+          data.bobot_asts +
+          data.bobot_asas,
+      )
       return total === 100
     },
     {
@@ -54,7 +57,8 @@ export const weightSettingsSchema = z
     },
   )
 
-export type WeightSettingsInput = z.infer<typeof weightSettingsSchema>
+export type WeightSettingsInput = z.input<typeof weightSettingsSchema>
+export type WeightSettingsValidated = z.output<typeof weightSettingsSchema>
 
 export const appearanceSettingsSchema = z.object({
   nama_sekolah: z

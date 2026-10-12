@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 
+import { GRADES_ROOT_KEY } from "@/hooks/use-grades"
 import { STUDENTS_ROOT_KEY } from "@/hooks/use-students"
 import {
   CSV_TEMPLATE_CONTENT,
@@ -156,7 +157,10 @@ export function CsvImportDialog({ open, onOpenChange }: CsvImportDialogProps) {
       toast.success(
         `Impor CSV selesai: ${result.data.ditambah} ditambah, ${result.data.diperbarui} diperbarui, ${result.data.dilewati} dilewati`,
       )
-      await queryClient.invalidateQueries({ queryKey: STUDENTS_ROOT_KEY })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: STUDENTS_ROOT_KEY }),
+        queryClient.invalidateQueries({ queryKey: GRADES_ROOT_KEY }),
+      ])
     })
   }
 

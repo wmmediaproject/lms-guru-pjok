@@ -15,11 +15,13 @@ import {
 import { toast } from "sonner"
 
 import type { Settings } from "@/lib/supabase/types"
+import { GRADES_ROOT_KEY } from "@/hooks/use-grades"
 import { SETTINGS_QUERY_KEY, useSettings } from "@/hooks/use-settings"
 import { DEFAULT_BOBOT, DEFAULT_KKM } from "@/lib/hitung/nilai-akhir"
 import {
   weightSettingsSchema,
   type WeightSettingsInput,
+  type WeightSettingsValidated,
 } from "@/lib/validators/pengaturan"
 import { simpanPenilaianAction } from "./actions"
 import { Badge } from "@/components/ui/badge"
@@ -54,15 +56,27 @@ export function WeightSettingsForm({
   const { data: settings } = useSettings(initialSettings)
   const [isPending, startTransition] = React.useTransition()
 
-  const form = useForm<WeightSettingsInput>({
+  const form = useForm<WeightSettingsInput, unknown, WeightSettingsValidated>({
     resolver: zodResolver(weightSettingsSchema),
     defaultValues: {
       bobot_praktek:
-        Number(settings?.bobot_praktek) || DEFAULT_BOBOT.bobot_praktek,
-      bobot_uh: Number(settings?.bobot_uh) || DEFAULT_BOBOT.bobot_uh,
-      bobot_asts: Number(settings?.bobot_asts) || DEFAULT_BOBOT.bobot_asts,
-      bobot_asas: Number(settings?.bobot_asas) || DEFAULT_BOBOT.bobot_asas,
-      kkm: Number(settings?.kkm) || DEFAULT_KKM,
+        settings?.bobot_praktek !== undefined
+          ? Number(settings.bobot_praktek)
+          : DEFAULT_BOBOT.bobot_praktek,
+      bobot_uh:
+        settings?.bobot_uh !== undefined
+          ? Number(settings.bobot_uh)
+          : DEFAULT_BOBOT.bobot_uh,
+      bobot_asts:
+        settings?.bobot_asts !== undefined
+          ? Number(settings.bobot_asts)
+          : DEFAULT_BOBOT.bobot_asts,
+      bobot_asas:
+        settings?.bobot_asas !== undefined
+          ? Number(settings.bobot_asas)
+          : DEFAULT_BOBOT.bobot_asas,
+      kkm:
+        settings?.kkm !== undefined ? Number(settings.kkm) : DEFAULT_KKM,
     },
   })
 
@@ -87,7 +101,7 @@ export function WeightSettingsForm({
   const wAsas = Number(watchedValues.bobot_asas) || 0
 
   const totalBobot =
-    Math.round((wPraktek + wUh + wAsts + wAsas) * 100) / 100
+    Math.round((wPraktek + wUh + wAsts + wAsas + Number.EPSILON) * 100) / 100
   const isTotalValid = totalBobot === 100
 
   const handleResetDefault = () => {
@@ -100,17 +114,23 @@ export function WeightSettingsForm({
     })
   }
 
-  const onSubmit = (values: WeightSettingsInput) => {
+  const onSubmit = (values: WeightSettingsValidated) => {
     startTransition(async () => {
       const result = await simpanPenilaianAction(values)
       if (!result.success) {
         toast.error(result.error ?? "Gagal menyimpan pengaturan penilaian")
         return
       }
+      if (result.data) {
+        queryClient.setQueryData(SETTINGS_QUERY_KEY, result.data)
+      }
       toast.success(
         "Pengaturan bobot dan KKM berhasil disimpan. Seluruh nilai siswa telah diperbarui.",
       )
-      await queryClient.invalidateQueries({ queryKey: SETTINGS_QUERY_KEY })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: SETTINGS_QUERY_KEY }),
+        queryClient.invalidateQueries({ queryKey: GRADES_ROOT_KEY }),
+      ])
     })
   }
 

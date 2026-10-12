@@ -67,7 +67,8 @@ begin
 
   -- 3. Catat waktu eksekusi terakhir pada tabel settings
   update public.settings
-  set last_promoted_at = v_now;
+  set last_promoted_at = v_now
+  where id is not null;
 
   return jsonb_build_object(
     'promoted_1_to_2', v_c1,

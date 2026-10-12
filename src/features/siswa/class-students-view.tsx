@@ -14,6 +14,10 @@ import {
 import { toast } from "sonner"
 
 import {
+  GRADES_ROOT_KEY,
+  removeStudentFromGradesCache,
+} from "@/hooks/use-grades"
+import {
   STUDENTS_ROOT_KEY,
   useStudentsByClass,
   type StudentWithGradesCount,
@@ -113,7 +117,11 @@ export function ClassStudentsView({
       }
       toast.success(`Siswa ${target.nama} berhasil dihapus`)
       setDeletingStudent(null)
-      await queryClient.invalidateQueries({ queryKey: STUDENTS_ROOT_KEY })
+      removeStudentFromGradesCache(queryClient, target.id)
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: STUDENTS_ROOT_KEY }),
+        queryClient.invalidateQueries({ queryKey: GRADES_ROOT_KEY }),
+      ])
     })
   }
 

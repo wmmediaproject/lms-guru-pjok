@@ -52,6 +52,8 @@ export async function tambahSiswaAction(
   }
 
   revalidatePath("/dashboard/kelas", "layout")
+  revalidatePath("/dashboard/nilai")
+  revalidatePath("/dashboard")
   return { success: true, data }
 }
 
@@ -101,6 +103,8 @@ export async function ubahSiswaAction(
   }
 
   revalidatePath("/dashboard/kelas", "layout")
+  revalidatePath("/dashboard/nilai")
+  revalidatePath("/dashboard")
   return { success: true, data }
 }
 
@@ -147,6 +151,8 @@ export async function hapusSiswaAction(id: string): Promise<SiswaActionResult> {
   }
 
   revalidatePath("/dashboard/kelas", "layout")
+  revalidatePath("/dashboard/nilai")
+  revalidatePath("/dashboard")
   return { success: true }
 }
 

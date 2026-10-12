@@ -164,7 +164,8 @@ begin
           new.bobot_asas
         ),
         new.kkm
-      );
+      )
+    where g.id is not null;
   end if;
 
   return new;

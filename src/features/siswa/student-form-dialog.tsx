@@ -9,6 +9,10 @@ import { toast } from "sonner"
 
 import type { Student } from "@/lib/supabase/types"
 import { KELAS_LIST } from "@/lib/sidebar-utils"
+import {
+  GRADES_ROOT_KEY,
+  syncStudentToGradesCache,
+} from "@/hooks/use-grades"
 import { STUDENTS_ROOT_KEY } from "@/hooks/use-students"
 import {
   studentSchema,
@@ -109,8 +113,15 @@ export function StudentFormDialog({
             : `Siswa ${values.nama} berhasil ditambahkan ke Kelas ${values.kelas}`,
       )
 
+      if (result.data) {
+        syncStudentToGradesCache(queryClient, result.data, student?.kelas)
+      }
+
       onOpenChange(false)
-      await queryClient.invalidateQueries({ queryKey: STUDENTS_ROOT_KEY })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: STUDENTS_ROOT_KEY }),
+        queryClient.invalidateQueries({ queryKey: GRADES_ROOT_KEY }),
+      ])
     })
   }
 

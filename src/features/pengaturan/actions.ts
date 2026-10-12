@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
-import type { Period, Settings } from "@/lib/supabase/types"
+import type { Grade, Period, Settings } from "@/lib/supabase/types"
+import { hitungNilaiDanPredikat } from "@/lib/hitung/nilai-akhir"
 import {
   namaPeriode,
   periodeBerikutnyaDariDaftar,
@@ -275,7 +276,7 @@ export async function simpanPenilaianAction(
 
   const { data: existing } = await supabase
     .from("settings")
-    .select("id")
+    .select("*")
     .limit(1)
     .maybeSingle()
 
@@ -293,15 +294,110 @@ export async function simpanPenilaianAction(
       .select("*")
       .single()
 
-    if (error) {
+    if (!error && data) {
+      revalidatePath("/dashboard", "layout")
+      revalidatePath("/dashboard/nilai")
+      revalidatePath("/dashboard/pengaturan")
+      return { success: true, data }
+    }
+
+    // Fallback apabila trigger lama di DB remote belum memiliki klausa WHERE (pg_safeupdate SQLSTATE 21000):
+    // Ganti baris singleton settings dengan DELETE + INSERT (tidak memicu AFTER UPDATE trigger lama)
+    // lalu hitung ulang seluruh baris grades dengan klausa onConflict yang aman.
+    if (error?.code === "21000") {
+      const { error: delError } = await supabase
+        .from("settings")
+        .delete()
+        .eq("id", existing.id)
+
+      if (delError) {
+        return {
+          success: false,
+          error: "Gagal menyimpan pengaturan penilaian",
+        }
+      }
+
+      const { data: replacedSettings, error: insError } = await supabase
+        .from("settings")
+        .insert({
+          id: existing.id,
+          nama_sekolah: existing.nama_sekolah ?? null,
+          last_promoted_at: existing.last_promoted_at ?? null,
+          bobot_praktek,
+          bobot_uh,
+          bobot_asts,
+          bobot_asas,
+          kkm,
+        })
+        .select("*")
+        .single()
+
+      if (insError || !replacedSettings) {
+        return {
+          success: false,
+          error: "Gagal menyimpan pengaturan penilaian",
+        }
+      }
+
+      // Hitung ulang nilai_akhir & predikat seluruh baris grades menggunakan bobot & KKM baru
+      const { data: allGrades } = await supabase
+        .from("grades")
+        .select("*")
+
+      if (allGrades && allGrades.length > 0) {
+        const bobotBaru = {
+          bobot_praktek,
+          bobot_uh,
+          bobot_asts,
+          bobot_asas,
+        }
+        const recomputedRows = (allGrades as Grade[]).map((g) => {
+          const { nilai_akhir, predikat } = hitungNilaiDanPredikat(
+            {
+              nilai_praktek: g.nilai_praktek,
+              nilai_uh: g.nilai_uh,
+              nilai_asts: g.nilai_asts,
+              nilai_asas: g.nilai_asas,
+            },
+            bobotBaru,
+            kkm,
+          )
+          return {
+            student_id: g.student_id,
+            period_id: g.period_id,
+            kelas_saat_nilai: g.kelas_saat_nilai,
+            nilai_praktek: g.nilai_praktek,
+            nilai_uh: g.nilai_uh,
+            nilai_asts: g.nilai_asts,
+            nilai_asas: g.nilai_asas,
+            nilai_akhir,
+            predikat,
+            keterangan: g.keterangan,
+          }
+        })
+
+        await supabase.from("grades").upsert(recomputedRows, {
+          onConflict: "student_id,period_id",
+        })
+      }
+
+      revalidatePath("/dashboard", "layout")
+      revalidatePath("/dashboard/nilai")
+      revalidatePath("/dashboard/pengaturan")
+      return { success: true, data: replacedSettings }
+    }
+
+    if (error?.code === "23514") {
       return {
         success: false,
-        error: "Gagal menyimpan pengaturan penilaian",
+        error: "Total bobot keempat komponen harus tepat 100% dan KKM 0–100",
       }
     }
 
-    revalidatePath("/dashboard", "layout")
-    return { success: true, data }
+    return {
+      success: false,
+      error: "Gagal menyimpan pengaturan penilaian",
+    }
   }
 
   const { data, error } = await supabase
@@ -317,6 +413,12 @@ export async function simpanPenilaianAction(
     .single()
 
   if (error) {
+    if (error.code === "23514") {
+      return {
+        success: false,
+        error: "Total bobot keempat komponen harus tepat 100% dan KKM 0–100",
+      }
+    }
     return {
       success: false,
       error: "Gagal menyimpan pengaturan penilaian",
@@ -324,6 +426,8 @@ export async function simpanPenilaianAction(
   }
 
   revalidatePath("/dashboard", "layout")
+  revalidatePath("/dashboard/nilai")
+  revalidatePath("/dashboard/pengaturan")
   return { success: true, data }
 }
 

@@ -638,9 +638,12 @@ export function GradesTableView({
             />
           ) : (
             <div className="w-full overflow-x-auto rounded-lg border border-border">
-              <Table className="min-w-[1040px] w-full">
+              <Table className="min-w-[1120px] w-full">
                 <TableHeader>
                   <TableRow className="bg-muted/50 hover:bg-muted/50">
+                    <TableHead className="w-28 h-10 px-3 align-middle font-semibold text-foreground">
+                      NISN
+                    </TableHead>
                     <TableHead className="static md:sticky md:left-0 z-20 bg-muted/95 backdrop-blur-xs min-w-44 h-10 px-3 align-middle font-semibold text-foreground">
                       Nama Siswa
                     </TableHead>
@@ -701,15 +704,19 @@ export function GradesTableView({
                         key={row.student_id}
                         className="group align-middle transition-colors odd:bg-background even:bg-muted/40 hover:bg-muted/65"
                       >
+                        <TableCell
+                          data-testid={`nisn-${row.student_id}`}
+                          className="py-2.5 px-3 align-middle whitespace-nowrap"
+                        >
+                          <span className="font-mono text-xs font-medium text-foreground">
+                            {row.nisn}
+                          </span>
+                        </TableCell>
+
                         <TableCell className="static md:sticky md:left-0 z-10 bg-background group-even:bg-[color-mix(in_oklch,var(--background),var(--muted)_40%)] group-hover:bg-[color-mix(in_oklch,var(--background),var(--muted)_65%)] transition-colors font-medium min-w-44 py-2.5 px-3 align-middle border-r border-border/50">
-                          <div className="flex flex-col justify-center gap-0.5">
-                            <span className="text-sm font-semibold leading-tight text-foreground">
-                              {row.nama}
-                            </span>
-                            <span className="text-[11px] font-mono leading-tight text-muted-foreground">
-                              NISN: {row.nisn}
-                            </span>
-                          </div>
+                          <span className="text-sm font-semibold leading-tight text-foreground">
+                            {row.nama}
+                          </span>
                         </TableCell>
 
                         <TableCell className="py-2.5 px-2 text-center align-middle">

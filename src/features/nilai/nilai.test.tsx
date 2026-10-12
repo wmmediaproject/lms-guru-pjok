@@ -409,9 +409,16 @@ describe("UI GradesTableView (/dashboard/nilai)", () => {
       </QueryClientProvider>,
     )
 
-    // Kedua siswa tampil di tabel
+    // Kedua siswa tampil di tabel beserta kolom NISN masing-masing
+    expect(screen.getByText("NISN")).toBeDefined()
     expect(screen.getByText("Andi Pratama")).toBeDefined()
     expect(screen.getByText("Bunga Citra")).toBeDefined()
+    expect(
+      screen.getByTestId(`nisn-${SAMPLE_STUDENTS[0]!.id}`).textContent,
+    ).toBe("0012345678")
+    expect(
+      screen.getByTestId(`nisn-${SAMPLE_STUDENTS[1]!.id}`).textContent,
+    ).toBe("0012345679")
 
     // Andi sudah punya nilai lengkap (80.00, Tuntas)
     expect(
@@ -481,6 +488,20 @@ describe("UI GradesTableView (/dashboard/nilai)", () => {
     expect(
       screen.getByTestId(`status-simpan-${SAMPLE_STUDENTS[1]!.id}`).textContent,
     ).toContain("Tersimpan ✓")
+
+    // Sinkronisasi langsung ketika NISN siswa diperbarui di data siswa
+    const { syncStudentToGradesCache } = await import("@/hooks/use-grades")
+    await act(async () => {
+      syncStudentToGradesCache(queryClient, {
+        ...SAMPLE_STUDENTS[0]!,
+        nisn: "0099887766",
+      })
+      vi.advanceTimersByTime(10)
+    })
+
+    expect(
+      screen.getByTestId(`nisn-${SAMPLE_STUDENTS[0]!.id}`).textContent,
+    ).toBe("0099887766")
 
     vi.useRealTimers()
   })

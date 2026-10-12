@@ -279,5 +279,119 @@ describe("Fase 3 — Periode & Pengaturan (Validasi, Actions & UI)", () => {
 
       expect(screen.getByText("Semester Ganjil 2026-2027")).toBeDefined()
     })
+
+    it("simpanPenilaianAction menangani error 21000 (pg_safeupdate) dan menghitung ulang nilai akhir & predikat secara akurat", async () => {
+      const mockGradesUpsert = vi.fn().mockResolvedValue({ error: null })
+
+      mockFrom.mockImplementation((table: string) => {
+        if (table === "settings") {
+          return {
+            select: vi.fn().mockReturnValue({
+              limit: vi.fn().mockReturnValue({
+                maybeSingle: vi.fn().mockResolvedValue({
+                  data: {
+                    id: "settings-1",
+                    nama_sekolah: "SDN 1 Nusantara",
+                    kkm: 75,
+                    bobot_praktek: 25,
+                    bobot_uh: 25,
+                    bobot_asts: 25,
+                    bobot_asas: 25,
+                    last_promoted_at: null,
+                    updated_at: "2026-07-01T00:00:00Z",
+                  },
+                  error: null,
+                }),
+              }),
+            }),
+            update: vi.fn().mockReturnValue({
+              eq: vi.fn().mockReturnValue({
+                select: vi.fn().mockReturnValue({
+                  single: vi.fn().mockResolvedValue({
+                    data: null,
+                    error: {
+                      code: "21000",
+                      message: "UPDATE requires a WHERE clause",
+                    },
+                  }),
+                }),
+              }),
+            }),
+            delete: vi.fn().mockReturnValue({
+              eq: vi.fn().mockResolvedValue({ error: null }),
+            }),
+            insert: vi.fn().mockReturnValue({
+              select: vi.fn().mockReturnValue({
+                single: vi.fn().mockResolvedValue({
+                  data: {
+                    id: "settings-1",
+                    nama_sekolah: "SDN 1 Nusantara",
+                    kkm: 75,
+                    bobot_praktek: 40,
+                    bobot_uh: 20,
+                    bobot_asts: 20,
+                    bobot_asas: 20,
+                    last_promoted_at: null,
+                    updated_at: "2026-07-02T00:00:00Z",
+                  },
+                  error: null,
+                }),
+              }),
+            }),
+          }
+        }
+
+        if (table === "grades") {
+          return {
+            select: vi.fn().mockResolvedValue({
+              data: [
+                {
+                  id: "g-1",
+                  student_id: "s-1",
+                  period_id: "p-1",
+                  kelas_saat_nilai: 1,
+                  nilai_praktek: 90,
+                  nilai_uh: 70,
+                  nilai_asts: 70,
+                  nilai_asas: 70,
+                  nilai_akhir: 75,
+                  predikat: "Tuntas",
+                  keterangan: null,
+                  updated_at: "2026-07-01T00:00:00Z",
+                },
+              ],
+              error: null,
+            }),
+            upsert: mockGradesUpsert,
+          }
+        }
+
+        return {}
+      })
+
+      const { simpanPenilaianAction } = await import("./actions")
+      const res = await simpanPenilaianAction({
+        bobot_praktek: 40,
+        bobot_uh: 20,
+        bobot_asts: 20,
+        bobot_asas: 20,
+        kkm: 75,
+      })
+
+      expect(res.success).toBe(true)
+      expect(res.data?.bobot_praktek).toBe(40)
+      // (90*40 + 70*20 + 70*20 + 70*20) / 100 = (3600 + 1400 + 1400 + 1400) / 100 = 78
+      expect(mockGradesUpsert).toHaveBeenCalledWith(
+        [
+          expect.objectContaining({
+            student_id: "s-1",
+            period_id: "p-1",
+            nilai_akhir: 78,
+            predikat: "Tuntas",
+          }),
+        ],
+        { onConflict: "student_id,period_id" },
+      )
+    })
   })
 })
