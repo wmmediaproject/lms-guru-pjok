@@ -19,6 +19,7 @@ export default async function DashboardLayout({
 
   let userEmail: string | null = null
   let userName: string | null = null
+  let userNip: string | null = null
   let namaSekolah: string | null = null
   let activePeriodName: string | null = null
 
@@ -43,6 +44,7 @@ export default async function DashboardLayout({
 
     const meta = userRes.data.user?.user_metadata
     userName = (meta?.nama_lengkap || meta?.full_name || meta?.name) as string | null
+    userNip = (meta?.nip || null) as string | null
   } catch {
     // Fallback gracefully if database is unreachable or not yet seeded
   }
@@ -57,6 +59,7 @@ export default async function DashboardLayout({
         <DashboardHeader
           userEmail={userEmail}
           userName={userName}
+          userNip={userNip}
           namaSekolah={namaSekolah}
           activePeriodName={activePeriodName}
         />

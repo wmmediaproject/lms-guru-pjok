@@ -9,7 +9,8 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic"
 
 export default async function DashboardPage() {
-  const { rows, activePeriodId, periods, settings } = await fetchDashboardData()
+  const { rows, activePeriodId, periods, settings, namaGuru } =
+    await fetchDashboardData()
 
   return (
     <DashboardView
@@ -17,6 +18,7 @@ export default async function DashboardPage() {
       initialPeriods={periods}
       activePeriodId={activePeriodId}
       settings={settings}
+      namaGuru={namaGuru}
     />
   )
 }

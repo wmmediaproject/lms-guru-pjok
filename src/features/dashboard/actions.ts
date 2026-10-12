@@ -8,6 +8,7 @@ export interface DashboardData {
   activePeriodId: string | null
   periods: Period[]
   settings: Settings | null
+  namaGuru: string | null
 }
 
 /**
@@ -111,21 +112,28 @@ export async function fetchDashboardData(
     activePeriodId: null,
     periods: [],
     settings: null,
+    namaGuru: null,
   }
 
   try {
     const supabase = await createClient()
 
-    const [periodsRes, settingsRes] = await Promise.all([
+    const [periodsRes, settingsRes, userRes] = await Promise.all([
       supabase
         .from("periods")
         .select("*")
         .order("tahun_mulai", { ascending: true }),
       supabase.from("settings").select("*").limit(1).maybeSingle(),
+      supabase.auth.getUser(),
     ])
 
     const periods = [...(periodsRes.data ?? [])].sort(bandingkanPeriode)
     const settings = settingsRes.data ?? null
+    const meta = userRes.data.user?.user_metadata
+    const namaGuru =
+      ((meta?.nama_lengkap || meta?.full_name || meta?.name) as
+        | string
+        | null) ?? null
 
     const activePeriod =
       periodId
@@ -133,7 +141,7 @@ export async function fetchDashboardData(
         : (periods.find((p) => p.is_active) ?? periods[0] ?? null)
 
     if (!activePeriod) {
-      return { ...empty, periods, settings }
+      return { ...empty, periods, settings, namaGuru }
     }
 
     // 1. Coba via RPC SQL `get_dashboard_summary`
@@ -147,6 +155,7 @@ export async function fetchDashboardData(
         activePeriodId: activePeriod.id,
         periods,
         settings,
+        namaGuru,
       }
     }
 
@@ -166,6 +175,7 @@ export async function fetchDashboardData(
       activePeriodId: activePeriod.id,
       periods,
       settings,
+      namaGuru,
     }
   } catch (err) {
     console.error("[dashboard] fetchDashboardData:", err)

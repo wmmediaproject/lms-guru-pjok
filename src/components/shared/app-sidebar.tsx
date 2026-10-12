@@ -121,13 +121,12 @@ export function AppSidebar({
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup>
+        <SidebarGroup className="pb-0">
           <SidebarGroupLabel className="font-heading text-xs font-bold uppercase tracking-wider text-muted-foreground in-data-[mobile=true]:mb-1">
-            Menu Utama
+            Navigasi
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {/* 0. Beranda */}
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
@@ -144,7 +143,16 @@ export function AppSidebar({
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
+        <SidebarGroup>
+          <SidebarGroupLabel className="font-heading text-xs font-bold uppercase tracking-wider text-muted-foreground in-data-[mobile=true]:mb-1">
+            Menu Utama
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
               {/* 1. Dashboard */}
               <SidebarMenuItem>
                 <SidebarMenuButton

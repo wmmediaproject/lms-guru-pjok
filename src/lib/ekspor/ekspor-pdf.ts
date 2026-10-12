@@ -1,4 +1,7 @@
-import { formatSelNilaiEkspor } from "@/lib/ekspor/format-ekspor"
+import {
+  formatNamaGuruEkspor,
+  formatSelNilaiEkspor,
+} from "@/lib/ekspor/format-ekspor"
 import type { OpsiGeneratorEkspor } from "@/lib/ekspor/ekspor-excel"
 
 /**
@@ -14,6 +17,7 @@ export async function buatBlobPdfNilai(
   ])
 
   const autoTable = autoTableModule.default ?? autoTableModule
+  const namaGuru = formatNamaGuruEkspor(opsi.namaGuru)
 
   const doc = new jsPDF({
     orientation: "landscape",
@@ -37,7 +41,7 @@ export async function buatBlobPdfNilai(
     doc.setFont("helvetica", "normal")
     doc.setFontSize(10)
     doc.text(
-      `Kelas: Kelas ${dataKelas.kelas}   |   Periode: ${opsi.namaPeriode}   |   KKM: ${opsi.kkm}`,
+      `Kelas: Kelas ${dataKelas.kelas}   |   Periode: ${opsi.namaPeriode}   |   KKM: ${opsi.kkm}   |   Guru: ${namaGuru}`,
       14,
       21,
     )

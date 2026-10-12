@@ -144,3 +144,15 @@ export function formatSelNilaiEkspor(val: number | null): string {
   }
   return Number.isInteger(val) ? String(val) : val.toFixed(2)
 }
+
+export const DEFAULT_NAMA_GURU = "Admin Guru PJOK"
+
+/**
+ * Menormalkan nama guru dari Nama Lengkap / Nama Profil admin.
+ * Jika kosong/belum diatur, kembali ke default "Admin Guru PJOK".
+ */
+export function formatNamaGuruEkspor(namaGuru?: string | null): string {
+  const bersih = namaGuru?.trim()
+  return bersih && bersih.length > 0 ? bersih : DEFAULT_NAMA_GURU
+}
+

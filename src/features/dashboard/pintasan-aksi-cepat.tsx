@@ -10,6 +10,7 @@ interface PintasanAksiCepatProps {
   periodId?: string | null
   namaPeriode?: string | null
   namaSekolah?: string | null
+  namaGuru?: string | null
   kkm?: number
 }
 
@@ -38,6 +39,7 @@ export function PintasanAksiCepat({
   periodId,
   namaPeriode,
   namaSekolah,
+  namaGuru,
   kkm = 75,
 }: PintasanAksiCepatProps) {
   return (
@@ -78,6 +80,7 @@ export function PintasanAksiCepat({
             periodId={periodId}
             namaPeriode={namaPeriode}
             namaSekolah={namaSekolah}
+            namaGuru={namaGuru}
             kkm={kkm}
           />
         )}
@@ -93,11 +96,13 @@ function ExportAllButton({
   periodId,
   namaPeriode,
   namaSekolah,
+  namaGuru,
   kkm,
 }: {
   periodId: string
   namaPeriode: string
   namaSekolah?: string | null
+  namaGuru?: string | null
   kkm: number
 }) {
   const [ExportButtonComp, setExportButtonComp] = React.useState<
@@ -106,6 +111,7 @@ function ExportAllButton({
       periodId: string | null
       namaPeriode: string
       namaSekolah?: string | null
+      namaGuru?: string | null
       kkm?: number
       disabled?: boolean
     }> | null
@@ -137,6 +143,7 @@ function ExportAllButton({
         periodId={periodId}
         namaPeriode={namaPeriode}
         namaSekolah={namaSekolah}
+        namaGuru={namaGuru}
         kkm={kkm}
       />
     </div>

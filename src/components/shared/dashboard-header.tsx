@@ -33,6 +33,7 @@ import { getBreadcrumbItems } from "@/lib/sidebar-utils"
 export interface DashboardHeaderProps {
   userEmail?: string | null
   userName?: string | null
+  userNip?: string | null
   namaSekolah?: string | null
   activePeriodName?: string | null
   periodSlot?: React.ReactNode
@@ -41,6 +42,7 @@ export interface DashboardHeaderProps {
 export function DashboardHeader({
   userEmail,
   userName,
+  userNip,
   namaSekolah,
   activePeriodName,
   periodSlot,
@@ -48,6 +50,9 @@ export function DashboardHeader({
   const pathname = usePathname()
   const breadcrumbs = getBreadcrumbItems(pathname)
   const [isLoggingOut, startTransition] = React.useTransition()
+
+  const displayUserName = userName?.trim() || "Admin Guru PJOK"
+  const displayNip = userNip?.trim() || "-"
 
   const handleKeluar = () => {
     startTransition(async () => {
@@ -115,11 +120,18 @@ export function DashboardHeader({
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              size="icon"
               aria-label="Menu pengguna"
-              className="cursor-pointer"
+              className="h-9 w-9 p-0 lg:w-auto lg:px-2.5 lg:py-1 gap-2 cursor-pointer"
             >
-              <User className="h-4 w-4" aria-hidden="true" />
+              <User className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <div className="hidden lg:flex lg:flex-col lg:items-start text-left leading-tight">
+                <span className="max-w-44 truncate text-xs font-semibold text-foreground">
+                  {displayUserName}
+                </span>
+                <span className="max-w-44 truncate font-mono text-[10px] text-muted-foreground">
+                  NIP: {displayNip}
+                </span>
+              </div>
               <span className="sr-only">Menu Pengguna</span>
             </Button>
           </DropdownMenuTrigger>
@@ -127,7 +139,10 @@ export function DashboardHeader({
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="font-heading text-sm font-bold uppercase tracking-wide text-foreground truncate">
-                  {userName || "Admin Guru PJOK"}
+                  {displayUserName}
+                </p>
+                <p className="truncate font-mono text-[11px] text-muted-foreground">
+                  NIP: {displayNip}
                 </p>
                 <p className="truncate text-xs text-muted-foreground">
                   {userEmail || "admin@sekolah.sch.id"}

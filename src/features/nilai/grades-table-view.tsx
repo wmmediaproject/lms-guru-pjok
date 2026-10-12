@@ -111,6 +111,7 @@ export interface GradesTableViewProps {
   initialSettings?: Settings | null
   initialStudents?: Student[]
   initialGrades?: Grade[]
+  initialNamaGuru?: string | null
 }
 
 export function GradesTableView({
@@ -119,6 +120,7 @@ export function GradesTableView({
   initialSettings,
   initialStudents,
   initialGrades,
+  initialNamaGuru = null,
 }: GradesTableViewProps) {
   const queryClient = useQueryClient()
   const [selectedKelas, setSelectedKelas] = React.useState<number>(initialKelas)
@@ -536,6 +538,7 @@ export function GradesTableView({
               periodId={selectedPeriodId}
               namaPeriode={selectedPeriod?.nama ?? "Semester_Ganjil_2026-2027"}
               namaSekolah={settings?.nama_sekolah ?? null}
+              namaGuru={initialNamaGuru}
               kkm={kkmAktif}
               currentClassRows={serverRows}
             />

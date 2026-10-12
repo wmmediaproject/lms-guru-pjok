@@ -1,7 +1,11 @@
-import type { DataEksporKelas } from "@/lib/ekspor/format-ekspor"
+import {
+  formatNamaGuruEkspor,
+  type DataEksporKelas,
+} from "@/lib/ekspor/format-ekspor"
 
 export interface OpsiGeneratorEkspor {
   namaSekolah?: string | null
+  namaGuru?: string | null
   namaPeriode: string
   kkm: number
   daftarKelas: ReadonlyArray<DataEksporKelas>
@@ -18,8 +22,10 @@ export async function buatBufferExcelNilai(
   const ExcelJSImport = await import("exceljs")
   const ExcelJS = ExcelJSImport.default ?? ExcelJSImport
 
+  const namaGuru = formatNamaGuruEkspor(opsi.namaGuru)
+
   const workbook = new ExcelJS.Workbook()
-  workbook.creator = "LMS Guru PJOK"
+  workbook.creator = namaGuru
   workbook.created = new Date()
 
   for (const dataKelas of opsi.daftarKelas) {
@@ -49,9 +55,9 @@ export async function buatBufferExcelNilai(
     titleRow.font = { bold: true, size: 13 }
     sheet.mergeCells("A1:K1")
 
-    // Baris 2: Subjudul Kelas, Periode, & KKM
+    // Baris 2: Subjudul Kelas, Periode, KKM, & Guru
     const subRow = sheet.addRow([
-      `Kelas: Kelas ${dataKelas.kelas}   |   Periode: ${opsi.namaPeriode}   |   KKM: ${opsi.kkm}`,
+      `Kelas: Kelas ${dataKelas.kelas}   |   Periode: ${opsi.namaPeriode}   |   KKM: ${opsi.kkm}   |   Guru: ${namaGuru}`,
     ])
     subRow.font = { italic: true, size: 10 }
     sheet.mergeCells("A2:K2")

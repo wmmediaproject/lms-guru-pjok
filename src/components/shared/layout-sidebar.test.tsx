@@ -20,6 +20,14 @@ vi.mock("next/navigation", () => ({
   redirect: vi.fn(),
 }))
 
+vi.mock("@/components/shared/theme-toggle", () => ({
+  ThemeToggle: () => <button type="button">Tema</button>,
+}))
+
+vi.mock("@/app/masuk/actions", () => ({
+  keluarAction: vi.fn(),
+}))
+
 // Mock matchMedia for useIsMobile in jsdom
 beforeEach(() => {
   vi.clearAllMocks()
@@ -66,7 +74,7 @@ describe("Fase 2 — Layout Dashboard, Sidebar & Komponen Shared", () => {
   })
 
   describe("2. Menu Sidebar & Submenu Kelas 1–6", () => {
-    it("menampilkan menu utama (Beranda, Dashboard, Kelola Kelas, Nilai Siswa, Pengaturan)", () => {
+    it("menampilkan grup Navigasi (Beranda) terpisah dari Menu Utama (Dashboard, Kelola Kelas, Nilai Siswa, Pengaturan)", () => {
       render(
         <TooltipProvider>
           <SidebarProvider defaultOpen={true}>
@@ -77,6 +85,8 @@ describe("Fase 2 — Layout Dashboard, Sidebar & Komponen Shared", () => {
 
       expect(screen.getByText("LMS GURU PJOK")).toBeDefined()
       expect(screen.getByText("SDN 01 Nusantara")).toBeDefined()
+      expect(screen.getByText("Navigasi")).toBeDefined()
+      expect(screen.getByText("Menu Utama")).toBeDefined()
       expect(screen.getByText("Beranda")).toBeDefined()
       expect(screen.getByText("Dashboard")).toBeDefined()
       expect(screen.getByText("Kelola Kelas")).toBeDefined()
@@ -170,6 +180,27 @@ describe("Fase 2 — Layout Dashboard, Sidebar & Komponen Shared", () => {
         screen.getByText("Tambahkan siswa baru atau impor dari CSV."),
       ).toBeDefined()
       expect(screen.getByText("Tambah Siswa")).toBeDefined()
+    })
+
+    it("merender DashboardHeader dengan Nama profil dan NIP di sebelah ikon profil untuk layar tablet landscape ke desktop (lg+)", async () => {
+      const { DashboardHeader } = await import("./dashboard-header")
+
+      render(
+        <TooltipProvider>
+          <SidebarProvider defaultOpen={true}>
+            <DashboardHeader
+              userName="Budi Santoso, S.Pd."
+              userNip="19850101 201001 1 001"
+              userEmail="budi@sekolah.sch.id"
+              periodSlot={<span>Semester Ganjil 2026-2027</span>}
+            />
+          </SidebarProvider>
+        </TooltipProvider>,
+      )
+
+      const userMenuBtn = screen.getByLabelText("Menu pengguna")
+      expect(userMenuBtn.textContent).toContain("Budi Santoso, S.Pd.")
+      expect(userMenuBtn.textContent).toContain("NIP: 19850101 201001 1 001")
     })
   })
 })

@@ -18,6 +18,7 @@ import {
 import {
   bentukDataEksporKelas,
   buatNamaFileEkspor,
+  formatNamaGuruEkspor,
   type DataEksporKelas,
   type FormatFileEkspor,
 } from "@/lib/ekspor/format-ekspor"
@@ -36,6 +37,7 @@ export interface ExportButtonProps {
   periodId: string | null
   namaPeriode: string
   namaSekolah?: string | null
+  namaGuru?: string | null
   kkm?: number
   currentClassRows?: ReadonlyArray<StudentGradeRow>
   disabled?: boolean
@@ -57,11 +59,31 @@ export function ExportButton({
   periodId,
   namaPeriode,
   namaSekolah = null,
+  namaGuru = null,
   kkm = 75,
   currentClassRows,
   disabled = false,
 }: ExportButtonProps) {
   const [isExporting, setIsExporting] = React.useState(false)
+
+  const ambilNamaGuruAktif = async (): Promise<string> => {
+    try {
+      const supabase = createClient()
+      if (supabase?.auth && typeof supabase.auth.getUser === "function") {
+        const { data } = await supabase.auth.getUser()
+        const meta = data?.user?.user_metadata
+        const dariProfil = (meta?.nama_lengkap ||
+          meta?.full_name ||
+          meta?.name) as string | undefined
+        if (dariProfil?.trim()) {
+          return dariProfil.trim()
+        }
+      }
+    } catch {
+      // Gunakan fallback prop namaGuru jika gagal memuat sesi
+    }
+    return formatNamaGuruEkspor(namaGuru)
+  }
 
   const muatDataEkspor = async (
     cakupan: "kelas" | "semua",
@@ -127,7 +149,10 @@ export function ExportButton({
 
     setIsExporting(true)
     try {
-      const daftarKelas = await muatDataEkspor(cakupan)
+      const [daftarKelas, namaGuruTerbaru] = await Promise.all([
+        muatDataEkspor(cakupan),
+        ambilNamaGuruTerbaruAtauProp(),
+      ])
       const namaFile = buatNamaFileEkspor({
         kelas: cakupan === "semua" ? "semua" : kelas,
         namaPeriode,
@@ -141,6 +166,7 @@ export function ExportButton({
         )
         const buffer = await buatBufferExcelNilai({
           namaSekolah,
+          namaGuru: namaGuruTerbaru,
           namaPeriode,
           kkm,
           daftarKelas,
@@ -154,6 +180,7 @@ export function ExportButton({
         const { buatBlobPdfNilai } = await import("@/lib/ekspor/ekspor-pdf")
         const blob = await buatBlobPdfNilai({
           namaSekolah,
+          namaGuru: namaGuruTerbaru,
           namaPeriode,
           kkm,
           daftarKelas,
@@ -169,6 +196,10 @@ export function ExportButton({
     } finally {
       setIsExporting(false)
     }
+  }
+
+  async function ambilNamaGuruTerbaruAtauProp(): Promise<string> {
+    return ambilNamaGuruAktif()
   }
 
   return (

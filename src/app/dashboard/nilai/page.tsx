@@ -24,10 +24,11 @@ export default async function NilaiSiswaPage({
   let initialSettings: Settings | null = null
   let initialStudents: Student[] | undefined = undefined
   let initialGrades: Grade[] | undefined = undefined
+  let initialNamaGuru: string | null = null
 
   try {
     const supabase = await createClient()
-    const [periodsRes, settingsRes, studentsRes] = await Promise.all([
+    const [periodsRes, settingsRes, studentsRes, userRes] = await Promise.all([
       supabase
         .from("periods")
         .select("*")
@@ -38,6 +39,7 @@ export default async function NilaiSiswaPage({
         .select("*")
         .eq("kelas", initialKelas)
         .order("nama", { ascending: true }),
+      supabase.auth.getUser(),
     ])
 
     if (periodsRes.data) {
@@ -48,6 +50,13 @@ export default async function NilaiSiswaPage({
     }
     if (studentsRes.data) {
       initialStudents = studentsRes.data
+    }
+
+    const meta = userRes.data.user?.user_metadata
+    if (meta) {
+      initialNamaGuru =
+        ((meta.nama_lengkap || meta.full_name || meta.name) as string | null) ??
+        null
     }
 
     const activePeriod =
@@ -74,6 +83,7 @@ export default async function NilaiSiswaPage({
       initialSettings={initialSettings}
       initialStudents={initialStudents}
       initialGrades={initialGrades}
+      initialNamaGuru={initialNamaGuru}
     />
   )
 }

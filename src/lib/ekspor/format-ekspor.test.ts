@@ -140,12 +140,13 @@ describe("Fase 7A — Pembentuk Nama File & Data Ekspor Nilai", () => {
     })
   })
 
-  it("buatBufferExcelNilai menghasilkan file .xlsx dengan satu sheet per kelas, NISN teks berawalan 0, dan baris ringkasan", async () => {
+  it("buatBufferExcelNilai menghasilkan file .xlsx dengan satu sheet per kelas, keterangan guru dari Nama Lengkap / Nama Profil, NISN teks berawalan 0, dan baris ringkasan", async () => {
     const kelas1 = bentukDataEksporKelas(1, SAMPLE_ROWS)
     const kelas2 = bentukDataEksporKelas(2, [])
 
     const buffer = await buatBufferExcelNilai({
       namaSekolah: "SDN 1 Nusantara",
+      namaGuru: "Budi Santoso, S.Pd.",
       namaPeriode: "Semester Ganjil 2026-2027",
       kkm: 75,
       daftarKelas: [kelas1, kelas2],
@@ -157,6 +158,11 @@ describe("Fase 7A — Pembentuk Nama File & Data Ekspor Nilai", () => {
     expect(wb.worksheets.map((w) => w.name)).toEqual(["Kelas 1", "Kelas 2"])
 
     const sheet1 = wb.getWorksheet("Kelas 1")!
+    // Baris 2 memuat subjudul termasuk keterangan Guru
+    expect(String(sheet1.getRow(2).getCell(1).value)).toContain(
+      "Guru: Budi Santoso, S.Pd.",
+    )
+
     // Baris 5 adalah siswa pertama (Andi Pratama), kolom 3 adalah NISN
     const nisnCell = sheet1.getRow(5).getCell(3)
     expect(nisnCell.value).toBe("0012345678")
@@ -167,11 +173,12 @@ describe("Fase 7A — Pembentuk Nama File & Data Ekspor Nilai", () => {
     expect(uhKosongCell.value).toBe("")
   })
 
-  it("buatBlobPdfNilai menghasilkan Blob PDF landscape yang valid", async () => {
+  it("buatBlobPdfNilai menghasilkan Blob PDF landscape yang valid beserta keterangan guru", async () => {
     const kelas1 = bentukDataEksporKelas(1, SAMPLE_ROWS)
 
     const blob = await buatBlobPdfNilai({
       namaSekolah: "SDN 1 Nusantara",
+      namaGuru: "Budi Santoso, S.Pd.",
       namaPeriode: "Semester Ganjil 2026-2027",
       kkm: 75,
       daftarKelas: [kelas1],
@@ -179,6 +186,8 @@ describe("Fase 7A — Pembentuk Nama File & Data Ekspor Nilai", () => {
 
     expect(blob).toBeInstanceOf(Blob)
     expect(blob.size).toBeGreaterThan(100)
+    const pdfText = new TextDecoder("latin1").decode(await blob.arrayBuffer())
+    expect(pdfText).toContain("Guru: Budi Santoso, S.Pd.")
   })
 
   it("mendukung ekspor data siswa ke Excel (.xlsx), PDF (.pdf), dan CSV (.csv) dengan NISN berawalan nol tetap utuh", async () => {

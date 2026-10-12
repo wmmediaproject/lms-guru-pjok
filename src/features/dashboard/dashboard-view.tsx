@@ -22,6 +22,7 @@ export interface DashboardViewProps {
   initialPeriods: Period[]
   activePeriodId: string | null
   settings: Settings | null
+  namaGuru?: string | null
 }
 
 function hitungAgregasiKlien(
@@ -113,6 +114,7 @@ export function DashboardView({
   initialPeriods,
   activePeriodId,
   settings,
+  namaGuru,
 }: DashboardViewProps) {
   const { selectedPeriod, selectedPeriodId } = useActivePeriod(initialPeriods)
   const effectivePeriodId = selectedPeriodId ?? activePeriodId
@@ -183,6 +185,7 @@ export function DashboardView({
             periodId={effectivePeriodId}
             namaPeriode={namaPeriode}
             namaSekolah={settings?.nama_sekolah}
+            namaGuru={namaGuru}
             kkm={settings?.kkm}
           />
         </div>
