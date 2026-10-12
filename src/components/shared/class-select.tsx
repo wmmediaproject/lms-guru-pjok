@@ -40,7 +40,7 @@ export function ClassSelect({
 
   return (
     <ButtonGroup className={cn("inline-flex items-stretch", className)}>
-      <ButtonGroupText className="h-8 py-0 gap-1.5 border-input bg-background px-2.5 text-xs sm:text-sm font-medium text-foreground select-none dark:bg-input/30">
+      <ButtonGroupText className="h-8 flex-1 justify-center sm:flex-initial sm:justify-start py-0 gap-1.5 border-input bg-background px-2.5 text-xs sm:text-sm font-medium text-foreground select-none dark:bg-input/30">
         <GraduationCap
           className="h-4 w-4 text-primary shrink-0"
           aria-hidden="true"
@@ -61,7 +61,7 @@ export function ClassSelect({
       >
         <SelectTrigger
           aria-label={ariaLabel}
-          className="h-8 w-8 py-0 px-0 justify-center border-input bg-background hover:bg-muted cursor-pointer dark:bg-input/30 dark:hover:bg-input/50"
+          className="h-8 w-8 shrink-0 py-0 px-0 justify-center border-input bg-background hover:bg-muted cursor-pointer dark:bg-input/30 dark:hover:bg-input/50"
         />
         <SelectContent position="popper" align="end" className="min-w-40">
           {allowAll && (

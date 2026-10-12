@@ -151,7 +151,7 @@ export function DashboardView({
     "—"
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <PageHeader
         title="Dashboard"
         description="Ringkasan statistik siswa, ketuntasan nilai, dan kelengkapan pengisian nilai PJOK."
@@ -159,6 +159,7 @@ export function DashboardView({
           <PeriodSelect
             initialPeriods={initialPeriods}
             fallbackName={namaPeriode}
+            className="w-full sm:w-auto"
           />
         }
       />
@@ -167,15 +168,15 @@ export function DashboardView({
       <KartuRingkasan rows={rows} isLoading={isLoading} />
 
       {/* Grafik & Daftar Perlu Dilengkapi */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
         {/* Grafik kiri (2/3) */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6 min-w-0">
           <GrafikRataRataKomponen rows={rows} isLoading={isLoading} />
           <GrafikKetuntasan rows={rows} isLoading={isLoading} />
         </div>
 
         {/* Panel kanan (1/3) */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6 min-w-0">
           <GrafikJenisKelamin rows={rows} isLoading={isLoading} />
           <DaftarPerluDilengkapi rows={rows} isLoading={isLoading} />
           <PintasanAksiCepat

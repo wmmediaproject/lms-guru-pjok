@@ -54,7 +54,7 @@ export function ClassCardsGrid({ initialSummaries }: ClassCardsGridProps) {
               type="button"
               variant="outline"
               onClick={() => setNaikKelasOpen(true)}
-              className="w-full sm:w-auto justify-center gap-1.5 cursor-pointer"
+              className="w-full sm:w-auto justify-center gap-1.5 text-xs sm:text-sm cursor-pointer"
             >
               <TrendingUp
                 className="h-4 w-4 text-primary shrink-0"
@@ -64,13 +64,13 @@ export function ClassCardsGrid({ initialSummaries }: ClassCardsGridProps) {
             </Button>
             <ExportStudentsButton
               disabled={totalSeluruhSiswa === 0}
-              className="w-full sm:w-auto justify-center"
+              className="w-full sm:w-auto justify-center text-xs sm:text-sm"
             />
             <Button
               type="button"
               variant="outline"
               onClick={() => setCsvDialogOpen(true)}
-              className="w-full sm:w-auto justify-center gap-1.5 cursor-pointer"
+              className="w-full sm:w-auto justify-center gap-1.5 text-xs sm:text-sm cursor-pointer"
             >
               <FileSpreadsheet
                 className="h-4 w-4 text-primary shrink-0"
@@ -81,7 +81,7 @@ export function ClassCardsGrid({ initialSummaries }: ClassCardsGridProps) {
             <Button
               type="button"
               onClick={() => setAddDialogOpen(true)}
-              className="w-full sm:w-auto justify-center gap-1.5 cursor-pointer"
+              className="w-full sm:w-auto justify-center gap-1.5 text-xs sm:text-sm cursor-pointer"
             >
               <UserPlus className="h-4 w-4 shrink-0" aria-hidden="true" />
               <span className="truncate">Tambah Siswa</span>

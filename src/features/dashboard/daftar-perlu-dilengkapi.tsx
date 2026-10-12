@@ -57,12 +57,12 @@ export function DaftarPerluDilengkapi({
   }
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="border-border/80 shadow-xs">
+      <CardHeader className="pb-2">
         <CardTitle className="text-base flex items-center gap-2">
-          <AlertTriangle className="h-4 w-4 text-primary" aria-hidden="true" />
-          Perlu Dilengkapi
-          <Badge variant="destructive" className="ml-auto text-xs">
+          <AlertTriangle className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
+          <span>Perlu Dilengkapi</span>
+          <Badge variant="destructive" className="ml-auto text-xs shrink-0">
             {kelasBelum.length} kelas
           </Badge>
         </CardTitle>
@@ -75,10 +75,10 @@ export function DaftarPerluDilengkapi({
           return (
             <div
               key={kelas}
-              className="flex items-center justify-between rounded-md border border-border/60 px-3 py-2"
+              className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-muted/20 px-3 py-2"
             >
-              <div className="text-sm">
-                <span className="font-semibold">Kelas {kelas}</span>
+              <div className="min-w-0 text-sm">
+                <span className="font-semibold text-foreground">Kelas {kelas}</span>
                 <span className="ml-2 text-muted-foreground text-xs">
                   {belum} dari {total} siswa belum diisi
                 </span>
@@ -87,10 +87,10 @@ export function DaftarPerluDilengkapi({
                 asChild
                 variant="ghost"
                 size="sm"
-                className="gap-1 text-primary hover:text-primary h-7 text-xs"
+                className="gap-1 text-primary hover:text-primary h-7 px-2 text-xs shrink-0"
               >
                 <Link href={`/dashboard/nilai?kelas=${kelas}`}>
-                  Isi Nilai
+                  <span>Isi Nilai</span>
                   <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
                 </Link>
               </Button>

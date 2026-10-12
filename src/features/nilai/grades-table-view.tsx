@@ -520,13 +520,17 @@ export function GradesTableView({
         title="Nilai Siswa"
         description={`Input dan kelola nilai PJOK Kelas ${selectedKelas} pada ${selectedPeriod?.nama ?? "periode aktif"}. Tersimpan otomatis.`}
         actions={
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <ClassSelect
               value={selectedKelas}
               onValueChange={handleSelectKelas}
               ariaLabel="Pilih kelas nilai siswa"
+              className="flex-1 sm:flex-initial"
             />
-            <PeriodSelect initialPeriods={initialPeriods} />
+            <PeriodSelect
+              initialPeriods={initialPeriods}
+              className="flex-1 sm:flex-initial"
+            />
             <ExportButton
               kelas={selectedKelas}
               periodId={selectedPeriodId}
@@ -540,10 +544,10 @@ export function GradesTableView({
       />
 
       <Card className="border-border/80 shadow-xs min-w-0 max-w-full">
-        <CardContent className="p-4 space-y-4 min-w-0 max-w-full">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center">
-              <div className="relative flex-1 max-w-sm">
+        <CardContent className="p-3.5 sm:p-4 space-y-3.5 sm:space-y-4 min-w-0 max-w-full">
+          <div className="flex flex-col gap-2.5 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center flex-1 min-w-0">
+              <div className="relative w-full sm:max-w-xs md:max-w-sm">
                 <Search
                   className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
                   aria-hidden="true"
@@ -554,7 +558,7 @@ export function GradesTableView({
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Cari nama atau NISN siswa..."
                   aria-label="Cari nama atau NISN siswa"
-                  className="pl-8 h-8 text-xs sm:text-sm"
+                  className="w-full pl-8 h-8 text-xs sm:text-sm"
                 />
               </div>
 
@@ -564,10 +568,12 @@ export function GradesTableView({
                 size="sm"
                 onClick={() => setOnlyIncomplete((prev) => !prev)}
                 aria-pressed={onlyIncomplete}
-                className="h-8 gap-1.5 cursor-pointer self-start sm:self-auto"
+                className="h-8 w-full sm:w-auto justify-between sm:justify-center gap-1.5 px-3 text-xs cursor-pointer shrink-0"
               >
-                <Filter className="h-3.5 w-3.5" aria-hidden="true" />
-                <span>Belum ada nilai</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Filter className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  <span>Belum ada nilai</span>
+                </span>
                 <Badge
                   variant={onlyIncomplete ? "secondary" : "outline"}
                   className="ml-0.5 px-1.5 py-0 text-[11px] font-mono"
@@ -577,12 +583,18 @@ export function GradesTableView({
               </Button>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <Badge variant="outline" className="h-7 px-2.5 font-mono text-[11px]">
+            <div className="flex items-center justify-between sm:justify-start lg:justify-end gap-1.5 sm:gap-2 w-full lg:w-auto shrink-0">
+              <Badge
+                variant="outline"
+                className="h-7 flex-1 sm:flex-initial justify-center px-2 sm:px-2.5 font-mono text-[10px] sm:text-[11px] truncate"
+              >
                 Praktek {bobotAktif.bobot_praktek}% · UH {bobotAktif.bobot_uh}%
                 · ASTS {bobotAktif.bobot_asts}% · ASAS {bobotAktif.bobot_asas}%
               </Badge>
-              <Badge variant="secondary" className="h-7 px-2.5 font-mono text-[11px]">
+              <Badge
+                variant="secondary"
+                className="h-7 shrink-0 px-2.5 font-mono text-[10px] sm:text-[11px] font-semibold"
+              >
                 KKM: {kkmAktif}
               </Badge>
             </div>

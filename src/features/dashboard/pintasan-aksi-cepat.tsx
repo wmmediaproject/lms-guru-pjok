@@ -41,11 +41,11 @@ export function PintasanAksiCepat({
   kkm = 75,
 }: PintasanAksiCepatProps) {
   return (
-    <Card>
-      <CardHeader>
+    <Card className="border-border/80 shadow-xs">
+      <CardHeader className="pb-2">
         <CardTitle className="text-base flex items-center gap-2">
-          <BarChart2 className="h-4 w-4 text-primary" aria-hidden="true" />
-          Aksi Cepat
+          <BarChart2 className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
+          <span>Aksi Cepat</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -54,13 +54,19 @@ export function PintasanAksiCepat({
             key={href}
             asChild
             variant="outline"
-            className="w-full justify-start gap-3 h-10"
+            className="w-full h-auto py-2.5 px-3 justify-start gap-3 whitespace-normal"
           >
             <Link href={href}>
-              <Icon className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
-              <div className="text-left">
-                <div className="text-sm font-medium">{label}</div>
-                <div className="text-xs text-muted-foreground">{deskripsi}</div>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
+                <Icon className="h-4 w-4" aria-hidden="true" />
+              </div>
+              <div className="min-w-0 flex-1 text-left">
+                <div className="text-sm font-semibold leading-snug text-foreground">
+                  {label}
+                </div>
+                <div className="text-xs text-muted-foreground leading-snug mt-0.5">
+                  {deskripsi}
+                </div>
               </div>
             </Link>
           </Button>
@@ -94,8 +100,6 @@ function ExportAllButton({
   namaSekolah?: string | null
   kkm: number
 }) {
-  // Dynamically resolve the current kelas — for quick export we use kelas 1
-  // (the full ExportButton component handles "semua" option internally)
   const [ExportButtonComp, setExportButtonComp] = React.useState<
     React.ComponentType<{
       kelas: number
@@ -117,20 +121,17 @@ function ExportAllButton({
     return (
       <Button
         variant="outline"
-        className="w-full justify-start gap-3 h-10"
+        className="w-full h-9 px-3 justify-center gap-2"
         disabled
       >
         <Download className="h-4 w-4 text-muted-foreground shrink-0" aria-hidden="true" />
-        <div className="text-left">
-          <div className="text-sm font-medium">Ekspor Nilai</div>
-          <div className="text-xs text-muted-foreground">Excel / PDF semua kelas</div>
-        </div>
+        <span className="text-sm font-medium">Ekspor Nilai</span>
       </Button>
     )
   }
 
   return (
-    <div className="w-full [&>button]:w-full [&>button]:justify-start [&>button]:gap-3 [&>button]:h-10">
+    <div className="w-full [&>button]:w-full [&>button]:h-9 [&>button]:px-3 [&>button]:justify-center">
       <ExportButtonComp
         kelas={1}
         periodId={periodId}

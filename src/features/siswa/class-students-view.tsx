@@ -206,16 +206,16 @@ export function ClassStudentsView({
         title={`Kelas ${kelas}`}
         description={`Daftar siswa aktif Kelas ${kelas} (${activeStudents.length} siswa aktif terdaftar).`}
         actions={
-          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+          <div className="grid grid-cols-2 gap-2 w-full sm:w-auto sm:flex sm:flex-wrap sm:items-center">
             {graduatedCount > 0 && (
               <Button
                 type="button"
                 variant={showGraduated ? "secondary" : "outline"}
                 onClick={() => setShowGraduated((prev) => !prev)}
-                className="gap-1.5 cursor-pointer"
+                className="col-span-2 w-full sm:w-auto justify-center gap-1.5 text-xs sm:text-sm cursor-pointer"
               >
-                <GraduationCap className="h-4 w-4" aria-hidden="true" />
-                <span>
+                <GraduationCap className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span className="truncate">
                   {showGraduated
                     ? "Sembunyikan Alumni Lulus"
                     : `Tampilkan Alumni Lulus (${graduatedCount})`}
@@ -230,31 +230,33 @@ export function ClassStudentsView({
                 }
               }}
               ariaLabel="Pindah tampilan kelas"
+              className="w-full sm:w-auto"
             />
             <ExportStudentsButton
               kelas={kelas}
               currentClassStudents={activeStudents}
               disabled={activeStudents.length === 0}
+              className="w-full sm:w-auto justify-center text-xs sm:text-sm"
             />
             <Button
               type="button"
               variant="outline"
               onClick={() => setCsvDialogOpen(true)}
-              className="gap-1.5 cursor-pointer"
+              className="w-full sm:w-auto justify-center gap-1.5 text-xs sm:text-sm cursor-pointer"
             >
               <FileSpreadsheet
-                className="h-4 w-4 text-primary"
+                className="h-4 w-4 text-primary shrink-0"
                 aria-hidden="true"
               />
-              <span>Impor CSV</span>
+              <span className="truncate">Impor CSV</span>
             </Button>
             <Button
               type="button"
               onClick={handleOpenAdd}
-              className="gap-1.5 cursor-pointer"
+              className="w-full sm:w-auto justify-center gap-1.5 text-xs sm:text-sm cursor-pointer"
             >
-              <UserPlus className="h-4 w-4" aria-hidden="true" />
-              <span>Tambah Siswa</span>
+              <UserPlus className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <span className="truncate">Tambah Siswa</span>
             </Button>
           </div>
         }
