@@ -83,3 +83,26 @@ export const changePasswordSchema = z
   })
 
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>
+
+export const profileSchema = z.object({
+  nama_lengkap: z
+    .string()
+    .trim()
+    .min(1, "Nama lengkap tidak boleh kosong")
+    .max(100, "Nama lengkap maksimal 100 karakter"),
+  nip: z
+    .string()
+    .trim()
+    .max(30, "NIP maksimal 30 karakter")
+    .optional()
+    .or(z.literal("")),
+  no_hp: z
+    .string()
+    .trim()
+    .max(20, "Nomor WhatsApp/HP maksimal 20 karakter")
+    .optional()
+    .or(z.literal("")),
+})
+
+export type ProfileInput = z.infer<typeof profileSchema>
+

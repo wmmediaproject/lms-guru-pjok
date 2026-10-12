@@ -18,6 +18,7 @@ export default async function DashboardLayout({
   const defaultOpen = parseSidebarCookie(sidebarCookie)
 
   let userEmail: string | null = null
+  let userName: string | null = null
   let namaSekolah: string | null = null
   let activePeriodName: string | null = null
 
@@ -39,6 +40,9 @@ export default async function DashboardLayout({
     userEmail = userRes.data.user?.email ?? null
     namaSekolah = settingsRes.data?.nama_sekolah ?? null
     activePeriodName = periodRes.data?.nama ?? null
+
+    const meta = userRes.data.user?.user_metadata
+    userName = (meta?.nama_lengkap || meta?.full_name || meta?.name) as string | null
   } catch {
     // Fallback gracefully if database is unreachable or not yet seeded
   }
@@ -49,13 +53,14 @@ export default async function DashboardLayout({
         namaSekolah={namaSekolah}
         hasServerCookie={hasServerCookie}
       />
-      <SidebarInset>
+      <SidebarInset className="min-w-0 lg:overflow-x-hidden">
         <DashboardHeader
           userEmail={userEmail}
+          userName={userName}
           namaSekolah={namaSekolah}
           activePeriodName={activePeriodName}
         />
-        <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6">
+        <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 min-w-0 lg:overflow-x-hidden">
           {children}
         </div>
       </SidebarInset>

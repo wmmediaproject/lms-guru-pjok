@@ -32,6 +32,7 @@ import { getBreadcrumbItems } from "@/lib/sidebar-utils"
 
 export interface DashboardHeaderProps {
   userEmail?: string | null
+  userName?: string | null
   namaSekolah?: string | null
   activePeriodName?: string | null
   periodSlot?: React.ReactNode
@@ -39,6 +40,7 @@ export interface DashboardHeaderProps {
 
 export function DashboardHeader({
   userEmail,
+  userName,
   namaSekolah,
   activePeriodName,
   periodSlot,
@@ -124,8 +126,8 @@ export function DashboardHeader({
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="font-heading text-sm font-bold uppercase tracking-wide text-foreground">
-                  Admin Guru PJOK
+                <p className="font-heading text-sm font-bold uppercase tracking-wide text-foreground truncate">
+                  {userName || "Admin Guru PJOK"}
                 </p>
                 <p className="truncate text-xs text-muted-foreground">
                   {userEmail || "admin@sekolah.sch.id"}

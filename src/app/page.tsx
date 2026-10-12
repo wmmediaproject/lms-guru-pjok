@@ -45,7 +45,7 @@ export default async function HomePage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full bg-primary/5 blur-3xl" />
 
         {/* Sporty Diagonal Racing Stripes */}
-        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] [background:repeating-linear-gradient(45deg,#000,#000_15px,transparent_15px,transparent_30deg)] dark:[background:repeating-linear-gradient(45deg,#fff,#fff_15px,transparent_15px,transparent_30deg)]" />
+        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] [background:repeating-linear-gradient(45deg,var(--foreground),var(--foreground)_15px,transparent_15px,transparent_30px)]" />
       </div>
 
       {/* Header Bar */}

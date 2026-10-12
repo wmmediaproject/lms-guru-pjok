@@ -515,7 +515,7 @@ export function GradesTableView({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-w-0 lg:overflow-x-hidden">
       <PageHeader
         title="Nilai Siswa"
         description={`Input dan kelola nilai PJOK Kelas ${selectedKelas} pada ${selectedPeriod?.nama ?? "periode aktif"}. Tersimpan otomatis.`}
@@ -539,13 +539,13 @@ export function GradesTableView({
         }
       />
 
-      <Card className="border-border/80">
-        <CardContent className="p-4 space-y-4">
+      <Card className="border-border/80 shadow-xs min-w-0 max-w-full">
+        <CardContent className="p-4 space-y-4 min-w-0 max-w-full">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center">
               <div className="relative flex-1 max-w-sm">
                 <Search
-                  className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                  className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground"
                   aria-hidden="true"
                 />
                 <Input
@@ -554,7 +554,7 @@ export function GradesTableView({
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Cari nama atau NISN siswa..."
                   aria-label="Cari nama atau NISN siswa"
-                  className="pl-8 h-9 text-sm"
+                  className="pl-8 h-8 text-xs sm:text-sm"
                 />
               </div>
 
@@ -564,7 +564,7 @@ export function GradesTableView({
                 size="sm"
                 onClick={() => setOnlyIncomplete((prev) => !prev)}
                 aria-pressed={onlyIncomplete}
-                className="gap-1.5 cursor-pointer self-start sm:self-auto"
+                className="h-8 gap-1.5 cursor-pointer self-start sm:self-auto"
               >
                 <Filter className="h-3.5 w-3.5" aria-hidden="true" />
                 <span>Belum ada nilai</span>
@@ -578,11 +578,11 @@ export function GradesTableView({
             </div>
 
             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <Badge variant="outline" className="font-mono text-[11px]">
+              <Badge variant="outline" className="h-7 px-2.5 font-mono text-[11px]">
                 Praktek {bobotAktif.bobot_praktek}% · UH {bobotAktif.bobot_uh}%
                 · ASTS {bobotAktif.bobot_asts}% · ASAS {bobotAktif.bobot_asas}%
               </Badge>
-              <Badge variant="secondary" className="font-mono text-[11px]">
+              <Badge variant="secondary" className="h-7 px-2.5 font-mono text-[11px]">
                 KKM: {kkmAktif}
               </Badge>
             </div>
@@ -626,37 +626,37 @@ export function GradesTableView({
             />
           ) : (
             <div className="w-full overflow-x-auto rounded-lg border border-border">
-              <Table className="min-w-[1050px] w-full">
+              <Table className="min-w-[1040px] w-full">
                 <TableHeader>
-                  <TableRow className="bg-muted/40">
-                    <TableHead className="sticky left-0 z-20 bg-muted/95 backdrop-blur-xs min-w-44 font-semibold">
-                      Nama
+                  <TableRow className="bg-muted/50 hover:bg-muted/50">
+                    <TableHead className="static md:sticky md:left-0 z-20 bg-muted/95 backdrop-blur-xs min-w-44 h-10 px-3 align-middle font-semibold text-foreground">
+                      Nama Siswa
                     </TableHead>
-                    <TableHead className="w-20 text-center font-semibold">
+                    <TableHead className="w-20 h-10 px-2 text-center align-middle font-semibold text-foreground">
                       Kelas
                     </TableHead>
-                    <TableHead className="w-24 text-center font-semibold">
+                    <TableHead className="w-24 h-10 px-2 text-center align-middle font-semibold text-foreground">
                       Praktek
                     </TableHead>
-                    <TableHead className="w-24 text-center font-semibold">
+                    <TableHead className="w-24 h-10 px-2 text-center align-middle font-semibold text-foreground">
                       UH
                     </TableHead>
-                    <TableHead className="w-24 text-center font-semibold">
+                    <TableHead className="w-24 h-10 px-2 text-center align-middle font-semibold text-foreground">
                       ASTS
                     </TableHead>
-                    <TableHead className="w-24 text-center font-semibold">
+                    <TableHead className="w-24 h-10 px-2 text-center align-middle font-semibold text-foreground">
                       ASAS
                     </TableHead>
-                    <TableHead className="w-28 text-center font-semibold">
+                    <TableHead className="w-28 h-10 px-2 text-center align-middle font-semibold text-foreground">
                       Nilai Akhir
                     </TableHead>
-                    <TableHead className="w-32 text-center font-semibold">
+                    <TableHead className="w-32 h-10 px-2 text-center align-middle font-semibold text-foreground">
                       Predikat
                     </TableHead>
-                    <TableHead className="min-w-56 font-semibold">
+                    <TableHead className="min-w-56 h-10 px-3 align-middle font-semibold text-foreground">
                       Keterangan
                     </TableHead>
-                    <TableHead className="w-36 text-right font-semibold">
+                    <TableHead className="w-36 h-10 px-3 text-center align-middle font-semibold text-foreground">
                       Status Simpan
                     </TableHead>
                   </TableRow>
@@ -687,20 +687,20 @@ export function GradesTableView({
                     return (
                       <TableRow
                         key={row.student_id}
-                        className="group align-top"
+                        className="group align-middle transition-colors hover:bg-muted/30"
                       >
-                        <TableCell className="sticky left-0 z-10 bg-background group-hover:bg-muted/40 transition-colors font-medium min-w-44 border-r border-border/50">
-                          <div className="flex flex-col">
-                            <span className="text-sm font-medium text-foreground">
+                        <TableCell className="static md:sticky md:left-0 z-10 bg-background group-hover:bg-muted/40 transition-colors font-medium min-w-44 py-2.5 px-3 align-middle border-r border-border/50">
+                          <div className="flex flex-col justify-center gap-0.5">
+                            <span className="text-sm font-semibold leading-tight text-foreground">
                               {row.nama}
                             </span>
-                            <span className="text-[11px] font-mono text-muted-foreground">
+                            <span className="text-[11px] font-mono leading-tight text-muted-foreground">
                               NISN: {row.nisn}
                             </span>
                           </div>
                         </TableCell>
 
-                        <TableCell className="text-center align-middle">
+                        <TableCell className="py-2.5 px-2 text-center align-middle">
                           <Badge variant="outline" className="font-mono text-xs">
                             Kelas {row.kelas}
                           </Badge>
@@ -709,9 +709,9 @@ export function GradesTableView({
                         {GRADE_COMPONENT_KEYS.map((compKey, colIndex) => (
                           <TableCell
                             key={compKey}
-                            className="text-center align-top py-2.5"
+                            className="py-2.5 px-2 text-center align-middle"
                           >
-                            <div className="flex justify-center">
+                            <div className="flex items-center justify-center">
                               <GradeCell
                                 studentName={row.nama}
                                 componentLabel={COMPONENT_LABELS[compKey]}
@@ -730,7 +730,7 @@ export function GradesTableView({
 
                         <TableCell
                           data-testid={`nilai-akhir-${row.student_id}`}
-                          className="text-center align-middle font-mono text-sm font-semibold tabular-nums"
+                          className="py-2.5 px-2 text-center align-middle font-mono text-sm font-semibold tabular-nums"
                         >
                           {nilai_akhir !== null ? (
                             <span className="text-foreground">
@@ -748,7 +748,7 @@ export function GradesTableView({
 
                         <TableCell
                           data-testid={`predikat-${row.student_id}`}
-                          className="text-center align-middle"
+                          className="py-2.5 px-2 text-center align-middle"
                         >
                           {predikat === "Tuntas" ? (
                             <Badge
@@ -779,7 +779,7 @@ export function GradesTableView({
                           )}
                         </TableCell>
 
-                        <TableCell className="align-top py-2.5">
+                        <TableCell className="py-2.5 px-3 align-middle">
                           <KeteranganCell
                             studentName={row.nama}
                             value={draft.keterangan}
@@ -792,10 +792,10 @@ export function GradesTableView({
 
                         <TableCell
                           data-testid={`status-simpan-${row.student_id}`}
-                          className="text-right align-middle"
+                          className="py-2.5 px-3 text-center align-middle"
                         >
                           {draft.status === "saving" ? (
-                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                            <span className="inline-flex items-center justify-center gap-1.5 text-xs font-medium text-muted-foreground">
                               <Loader2
                                 className="h-3.5 w-3.5 animate-spin text-primary"
                                 aria-hidden="true"
@@ -803,7 +803,7 @@ export function GradesTableView({
                               <span>Menyimpan…</span>
                             </span>
                           ) : draft.status === "error" ? (
-                            <div className="inline-flex flex-col items-end gap-1">
+                            <div className="inline-flex flex-col items-center gap-1">
                               <span className="inline-flex items-center gap-1 text-xs font-semibold text-destructive">
                                 <AlertCircle
                                   className="h-3.5 w-3.5"
@@ -829,7 +829,7 @@ export function GradesTableView({
                           ) : draft.status === "dirty" ? (
                             <span
                               className={cn(
-                                "inline-flex items-center gap-1 text-xs font-medium",
+                                "inline-flex items-center justify-center gap-1 text-xs font-medium",
                                 Object.keys(draft.fieldErrors).length > 0
                                   ? "text-destructive"
                                   : "text-muted-foreground",
@@ -842,7 +842,7 @@ export function GradesTableView({
                               <span>Belum tersimpan</span>
                             </span>
                           ) : draft.status === "saved" ? (
-                            <span className="inline-flex items-center gap-1 text-xs font-medium text-foreground">
+                            <span className="inline-flex items-center justify-center gap-1 text-xs font-medium text-foreground">
                               <CheckCircle2
                                 className="h-3.5 w-3.5 text-accent"
                                 aria-hidden="true"

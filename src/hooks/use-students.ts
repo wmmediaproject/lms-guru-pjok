@@ -33,7 +33,7 @@ export function useStudentsByClass(
         throw new Error(error.message)
       }
 
-      const list = students ?? []
+      const list = (students ?? []).filter((s) => s.status !== "lulus")
       if (list.length === 0) return []
 
       const ids = list.map((s) => s.id)
@@ -63,7 +63,7 @@ export function useClassSummaries(initialData?: ClassSummary[]) {
       const supabase = createClient()
       const { data, error } = await supabase
         .from("students")
-        .select("kelas, jenis_kelamin")
+        .select("*")
 
       if (error) {
         throw new Error(error.message)

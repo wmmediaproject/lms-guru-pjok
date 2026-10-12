@@ -33,11 +33,11 @@ import { Skeleton } from "@/components/ui/skeleton"
 // Warna chart dari CSS tokens (hardcode OKLCH fallback hex untuk recharts)
 // ---------------------------------------------------------------------------
 const CHART_COLORS = {
-  chart1: "var(--color-chart-1, #c2410c)", // primary orange-red
-  chart2: "var(--color-chart-2, #65a30d)", // lime green
-  chart3: "var(--color-chart-3, #2563eb)", // blue
-  chart4: "var(--color-chart-4, #d97706)", // amber
-  chart5: "var(--color-chart-5, #0891b2)", // cyan
+  chart1: "var(--color-chart-1)",
+  chart2: "var(--color-chart-2)",
+  chart3: "var(--color-chart-3)",
+  chart4: "var(--color-chart-4)",
+  chart5: "var(--color-chart-5)",
 }
 
 const KOMPONEN_BARS = [

@@ -33,7 +33,7 @@ export function KeteranganCell({
   const isOverLimit = charCount > MAX_KETERANGAN_LENGTH || Boolean(error)
 
   return (
-    <div className="flex flex-col gap-1 min-w-48">
+    <div className="flex flex-col justify-center gap-1 min-w-48">
       <div className="flex items-center gap-1.5">
         <Input
           type="text"
@@ -103,17 +103,11 @@ export function KeteranganCell({
         </Popover>
       </div>
 
-      <div className="flex items-center justify-between gap-2 px-0.5">
-        {error ? (
-          <span role="alert" className="text-[11px] text-destructive font-medium">
-            {error}
-          </span>
-        ) : (
-          <span className="text-[10px] text-muted-foreground">
-            {charCount > 0 ? `${charCount}/${MAX_KETERANGAN_LENGTH} karakter` : "Maks. 300 karakter"}
-          </span>
-        )}
-      </div>
+      {error && (
+        <span role="alert" className="px-0.5 text-[11px] text-destructive font-medium">
+          {error}
+        </span>
+      )}
     </div>
   )
 }

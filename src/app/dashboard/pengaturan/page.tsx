@@ -13,6 +13,7 @@ export default async function PengaturanPage() {
   let initialPeriods: Period[] | undefined = undefined
   let initialSettings: Settings | null = null
   let userEmail: string | null = null
+  let profile: { nama_lengkap?: string | null; nip?: string | null; no_hp?: string | null } | null = null
 
   try {
     const supabase = await createClient()
@@ -30,6 +31,15 @@ export default async function PengaturanPage() {
     }
     initialSettings = settingsRes.data ?? null
     userEmail = userRes.data.user?.email ?? null
+
+    const meta = userRes.data.user?.user_metadata
+    if (meta) {
+      profile = {
+        nama_lengkap: (meta.nama_lengkap || meta.full_name || meta.name) as string | null,
+        nip: (meta.nip || null) as string | null,
+        no_hp: (meta.no_hp || null) as string | null,
+      }
+    }
   } catch {
     // Graceful fallback if DB is unreachable
   }
@@ -45,6 +55,7 @@ export default async function PengaturanPage() {
         initialPeriods={initialPeriods}
         initialSettings={initialSettings}
         userEmail={userEmail}
+        profile={profile}
       />
     </div>
   )

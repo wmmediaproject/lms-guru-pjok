@@ -8,9 +8,11 @@ import { toast } from "sonner"
 
 import {
   changePasswordSchema,
+  profileSchema,
   type ChangePasswordInput,
+  type ProfileInput,
 } from "@/lib/validators/pengaturan"
-import { ubahKataSandiAction } from "./actions"
+import { ubahKataSandiAction, ubahProfilAdminAction } from "./actions"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -22,6 +24,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -29,14 +32,42 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-export interface AccountTabProps {
-  userEmail?: string | null
+export interface AdminProfileData {
+  nama_lengkap?: string | null
+  nip?: string | null
+  no_hp?: string | null
 }
 
-export function AccountTab({ userEmail }: AccountTabProps) {
-  const [isPending, startTransition] = React.useTransition()
+export interface AccountTabProps {
+  userEmail?: string | null
+  profile?: AdminProfileData | null
+}
 
-  const form = useForm<ChangePasswordInput>({
+export function AccountTab({ userEmail, profile }: AccountTabProps) {
+  const [isPendingPassword, startPasswordTransition] = React.useTransition()
+  const [isPendingProfile, startProfileTransition] = React.useTransition()
+
+  const profileForm = useForm<ProfileInput>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      nama_lengkap: profile?.nama_lengkap || "Admin Guru PJOK",
+      nip: profile?.nip || "",
+      no_hp: profile?.no_hp || "",
+    },
+  })
+
+  // Sync profile defaults when profile prop changes
+  React.useEffect(() => {
+    if (profile) {
+      profileForm.reset({
+        nama_lengkap: profile.nama_lengkap || "Admin Guru PJOK",
+        nip: profile.nip || "",
+        no_hp: profile.no_hp || "",
+      })
+    }
+  }, [profile, profileForm])
+
+  const passwordForm = useForm<ChangePasswordInput>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
       password_baru: "",
@@ -44,15 +75,26 @@ export function AccountTab({ userEmail }: AccountTabProps) {
     },
   })
 
-  const onSubmit = (values: ChangePasswordInput) => {
-    startTransition(async () => {
+  const onProfileSubmit = (values: ProfileInput) => {
+    startProfileTransition(async () => {
+      const result = await ubahProfilAdminAction(values)
+      if (!result.success) {
+        toast.error(result.error ?? "Gagal memperbarui profil admin")
+        return
+      }
+      toast.success("Profil admin berhasil diperbarui")
+    })
+  }
+
+  const onPasswordSubmit = (values: ChangePasswordInput) => {
+    startPasswordTransition(async () => {
       const result = await ubahKataSandiAction(values)
       if (!result.success) {
         toast.error(result.error ?? "Gagal memperbarui kata sandi")
         return
       }
       toast.success("Kata sandi berhasil diperbarui")
-      form.reset({
+      passwordForm.reset({
         password_baru: "",
         konfirmasi_password: "",
       })
@@ -65,21 +107,100 @@ export function AccountTab({ userEmail }: AccountTabProps) {
         <CardHeader>
           <CardTitle className="font-heading text-xl font-bold uppercase tracking-wide flex items-center gap-2">
             <ShieldCheck className="h-5 w-5 text-primary" aria-hidden="true" />
-            Informasi Akun Admin
+            Informasi & Profil Admin
           </CardTitle>
           <CardDescription>
-            Akun administrator tunggal yang sedang masuk ke aplikasi.
+            Perbarui data identitas profil akun administrator yang tampil di aplikasi.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="max-w-md space-y-1.5">
-            <p className="text-xs font-medium text-muted-foreground">
-              Email Terdaftar
-            </p>
-            <p className="rounded-md border border-border/80 bg-muted/40 px-3 py-2 text-sm font-medium text-foreground">
-              {userEmail || "admin@sekolah.sch.id"}
-            </p>
-          </div>
+          <Form {...profileForm}>
+            <form
+              onSubmit={profileForm.handleSubmit(onProfileSubmit)}
+              className="max-w-md space-y-4"
+              noValidate
+            >
+              <div className="space-y-1.5">
+                <p className="text-xs font-medium text-muted-foreground">
+                  Email Terdaftar (Akun Login)
+                </p>
+                <p className="rounded-md border border-border/80 bg-muted/40 px-3 py-2 text-sm font-medium text-foreground">
+                  {userEmail || "admin@sekolah.sch.id"}
+                </p>
+              </div>
+
+              <FormField
+                control={profileForm.control}
+                name="nama_lengkap"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nama Lengkap / Nama Profil</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Contoh: Budi Santoso, S.Pd."
+                        disabled={isPendingProfile}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Nama yang tampil di bagian atas menu admin.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={profileForm.control}
+                name="nip"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>NIP (Opsional)</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Contoh: 19850101 201001 1 001"
+                        disabled={isPendingProfile}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={profileForm.control}
+                name="no_hp"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nomor WhatsApp / HP (Opsional)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="tel"
+                        placeholder="Contoh: 081234567890"
+                        disabled={isPendingProfile}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type="submit"
+                disabled={isPendingProfile}
+                className="gap-1.5 cursor-pointer"
+              >
+                {isPendingProfile ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4" aria-hidden="true" />
+                )}
+                <span>Simpan Profil Admin</span>
+              </Button>
+            </form>
+          </Form>
         </CardContent>
       </Card>
 
@@ -94,14 +215,14 @@ export function AccountTab({ userEmail }: AccountTabProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
+          <Form {...passwordForm}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}
               className="max-w-md space-y-4"
               noValidate
             >
               <FormField
-                control={form.control}
+                control={passwordForm.control}
                 name="password_baru"
                 render={({ field }) => (
                   <FormItem>
@@ -111,7 +232,7 @@ export function AccountTab({ userEmail }: AccountTabProps) {
                         type="password"
                         placeholder="Masukkan kata sandi baru"
                         autoComplete="new-password"
-                        disabled={isPending}
+                        disabled={isPendingPassword}
                         {...field}
                       />
                     </FormControl>
@@ -121,7 +242,7 @@ export function AccountTab({ userEmail }: AccountTabProps) {
               />
 
               <FormField
-                control={form.control}
+                control={passwordForm.control}
                 name="konfirmasi_password"
                 render={({ field }) => (
                   <FormItem>
@@ -131,7 +252,7 @@ export function AccountTab({ userEmail }: AccountTabProps) {
                         type="password"
                         placeholder="Ulangi kata sandi baru"
                         autoComplete="new-password"
-                        disabled={isPending}
+                        disabled={isPendingPassword}
                         {...field}
                       />
                     </FormControl>
@@ -142,10 +263,10 @@ export function AccountTab({ userEmail }: AccountTabProps) {
 
               <Button
                 type="submit"
-                disabled={isPending}
+                disabled={isPendingPassword}
                 className="gap-1.5 cursor-pointer"
               >
-                {isPending ? (
+                {isPendingPassword ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <Save className="h-4 w-4" aria-hidden="true" />

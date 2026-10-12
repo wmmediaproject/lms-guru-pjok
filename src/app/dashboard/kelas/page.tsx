@@ -17,7 +17,7 @@ export default async function KelolaKelasPage() {
     const supabase = await createClient()
     const { data } = await supabase
       .from("students")
-      .select("kelas, jenis_kelamin")
+      .select("*")
 
     if (data) {
       initialSummaries = hitungRingkasanKelas(data)

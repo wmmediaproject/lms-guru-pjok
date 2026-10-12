@@ -36,10 +36,11 @@ export default async function KelasDetailPage({ params }: KelasDetailPageProps) 
       .order("nama", { ascending: true })
 
     if (students) {
-      if (students.length === 0) {
+      const activeStudents = students.filter((s) => s.status !== "lulus")
+      if (activeStudents.length === 0) {
         initialStudents = []
       } else {
-        const ids = students.map((s) => s.id)
+        const ids = activeStudents.map((s) => s.id)
         const { data: gradesRows } = await supabase
           .from("grades")
           .select("student_id")
@@ -50,7 +51,7 @@ export default async function KelasDetailPage({ params }: KelasDetailPageProps) 
           countMap.set(g.student_id, (countMap.get(g.student_id) ?? 0) + 1)
         }
 
-        initialStudents = students.map((s) => ({
+        initialStudents = activeStudents.map((s) => ({
           ...s,
           grades_count: countMap.get(s.id) ?? 0,
         }))

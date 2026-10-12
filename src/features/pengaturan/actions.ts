@@ -11,6 +11,7 @@ import {
   appearanceSettingsSchema,
   changePasswordSchema,
   periodeSchema,
+  profileSchema,
   weightSettingsSchema,
 } from "@/lib/validators/pengaturan"
 import { ensureAdminProfile } from "@/lib/supabase/sync-admin-profile"
@@ -412,4 +413,54 @@ export async function ubahKataSandiAction(
   }
 
   return { success: true }
+}
+
+export async function ubahProfilAdminAction(
+  rawInput: unknown,
+): Promise<ActionResult<{ nama_lengkap: string; nip?: string; no_hp?: string }>> {
+  const parsed = profileSchema.safeParse(rawInput)
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: parsed.error.issues[0]?.message ?? "Data profil tidak valid",
+    }
+  }
+
+  const supabase = await createClient()
+  const { data: userData, error: userError } = await supabase.auth.getUser()
+
+  if (userError || !userData?.user) {
+    return {
+      success: false,
+      error: "Gagal memverifikasi sesi admin",
+    }
+  }
+
+  const metadataUpdate = {
+    nama_lengkap: parsed.data.nama_lengkap,
+    nip: parsed.data.nip || null,
+    no_hp: parsed.data.no_hp || null,
+    full_name: parsed.data.nama_lengkap,
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    data: metadataUpdate,
+  })
+
+  if (error) {
+    return {
+      success: false,
+      error: "Gagal memperbarui profil admin: " + error.message,
+    }
+  }
+
+  revalidatePath("/dashboard", "layout")
+  return {
+    success: true,
+    data: {
+      nama_lengkap: parsed.data.nama_lengkap,
+      nip: parsed.data.nip || undefined,
+      no_hp: parsed.data.no_hp || undefined,
+    },
+  }
 }

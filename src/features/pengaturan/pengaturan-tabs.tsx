@@ -8,18 +8,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PeriodTab } from "./period-tab"
 import { WeightSettingsForm } from "./weight-settings-form"
 import { AppearanceTab } from "./appearance-tab"
-import { AccountTab } from "./account-tab"
+import { AccountTab, type AdminProfileData } from "./account-tab"
 
 export interface PengaturanTabsProps {
   initialPeriods?: Period[]
   initialSettings?: Settings | null
   userEmail?: string | null
+  profile?: AdminProfileData | null
 }
 
 export function PengaturanTabs({
   initialPeriods,
   initialSettings,
   userEmail,
+  profile,
 }: PengaturanTabsProps) {
   return (
     <Tabs defaultValue="periode" className="w-full space-y-4">
@@ -55,7 +57,7 @@ export function PengaturanTabs({
       </TabsContent>
 
       <TabsContent value="akun">
-        <AccountTab userEmail={userEmail} />
+        <AccountTab userEmail={userEmail} profile={profile} />
       </TabsContent>
     </Tabs>
   )

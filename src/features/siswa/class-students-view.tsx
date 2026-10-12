@@ -26,6 +26,7 @@ import {
   type DataTableFeatures,
 } from "@/components/shared/data-table"
 import { EmptyState } from "@/components/shared/empty-state"
+import { ExportStudentsButton } from "@/components/shared/export-students-button"
 import { PageHeader } from "@/components/shared/page-header"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -205,7 +206,7 @@ export function ClassStudentsView({
         title={`Kelas ${kelas}`}
         description={`Daftar siswa aktif Kelas ${kelas} (${activeStudents.length} siswa aktif terdaftar).`}
         actions={
-          <>
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             {graduatedCount > 0 && (
               <Button
                 type="button"
@@ -230,13 +231,21 @@ export function ClassStudentsView({
               }}
               ariaLabel="Pindah tampilan kelas"
             />
+            <ExportStudentsButton
+              kelas={kelas}
+              currentClassStudents={activeStudents}
+              disabled={activeStudents.length === 0}
+            />
             <Button
               type="button"
               variant="outline"
               onClick={() => setCsvDialogOpen(true)}
               className="gap-1.5 cursor-pointer"
             >
-              <FileSpreadsheet className="h-4 w-4" aria-hidden="true" />
+              <FileSpreadsheet
+                className="h-4 w-4 text-primary"
+                aria-hidden="true"
+              />
               <span>Impor CSV</span>
             </Button>
             <Button
@@ -247,7 +256,7 @@ export function ClassStudentsView({
               <UserPlus className="h-4 w-4" aria-hidden="true" />
               <span>Tambah Siswa</span>
             </Button>
-          </>
+          </div>
         }
       />
 

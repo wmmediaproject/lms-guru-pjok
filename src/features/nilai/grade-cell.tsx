@@ -68,7 +68,7 @@ export function GradeCell({
   }
 
   return (
-    <div className="flex flex-col items-start gap-1">
+    <div className="flex flex-col items-center justify-center gap-1">
       <Input
         type="text"
         inputMode="decimal"
@@ -90,7 +90,7 @@ export function GradeCell({
       {hasError && (
         <span
           role="alert"
-          className="max-w-28 text-[11px] leading-tight font-medium text-destructive"
+          className="max-w-28 text-center text-[11px] leading-tight font-medium text-destructive"
         >
           {error}
         </span>

@@ -9,6 +9,13 @@ import {
 } from "@/lib/ekspor/format-ekspor"
 import { buatBufferExcelNilai } from "@/lib/ekspor/ekspor-excel"
 import { buatBlobPdfNilai } from "@/lib/ekspor/ekspor-pdf"
+import {
+  bentukDataEksporSiswaKelas,
+  buatBlobPdfSiswa,
+  buatBufferExcelSiswa,
+  buatCsvDataSiswa,
+  buatNamaFileEksporSiswa,
+} from "@/lib/ekspor/ekspor-siswa"
 
 const SAMPLE_ROWS: StudentGradeRow[] = [
   {
@@ -172,5 +179,47 @@ describe("Fase 7A — Pembentuk Nama File & Data Ekspor Nilai", () => {
 
     expect(blob).toBeInstanceOf(Blob)
     expect(blob.size).toBeGreaterThan(100)
+  })
+
+  it("mendukung ekspor data siswa ke Excel (.xlsx), PDF (.pdf), dan CSV (.csv) dengan NISN berawalan nol tetap utuh", async () => {
+    expect(buatNamaFileEksporSiswa({ kelas: "semua", format: "xlsx" })).toBe(
+      "Data_Siswa_PJOK_Semua_Kelas.xlsx",
+    )
+    expect(buatNamaFileEksporSiswa({ kelas: 3, format: "csv" })).toBe(
+      "Data_Siswa_PJOK_Kelas3.csv",
+    )
+
+    const dataKelas1 = bentukDataEksporSiswaKelas(1, [
+      { nisn: "0012345678", nama: "Andi Pratama", kelas: 1, jenis_kelamin: "L" },
+      { nisn: "0012345679", nama: "Bunga Citra", kelas: 1, jenis_kelamin: "P" },
+    ])
+
+    expect(dataKelas1.ringkasan).toEqual({
+      total: 2,
+      laki_laki: 1,
+      perempuan: 1,
+      belum_diisi: 0,
+    })
+
+    const csv = buatCsvDataSiswa([dataKelas1])
+    expect(csv).toContain("0012345678")
+    expect(csv).toContain("Andi Pratama")
+
+    const excelBuffer = await buatBufferExcelSiswa({
+      namaSekolah: "SDN 1 Nusantara",
+      daftarKelas: [dataKelas1],
+    })
+    const wb = new ExcelJS.Workbook()
+    await wb.xlsx.load(excelBuffer)
+    expect(wb.getWorksheet("Kelas 1")?.getRow(5).getCell(2).value).toBe(
+      "0012345678",
+    )
+
+    const pdfBlob = await buatBlobPdfSiswa({
+      namaSekolah: "SDN 1 Nusantara",
+      daftarKelas: [dataKelas1],
+    })
+    expect(pdfBlob).toBeInstanceOf(Blob)
+    expect(pdfBlob.size).toBeGreaterThan(100)
   })
 })

@@ -15,28 +15,22 @@ interface PintasanAksiCepatProps {
 
 const PINTASAN = [
   {
-    label: "Kelola Kelas",
+    label: "Kelola Kelas & Siswa",
     href: "/dashboard/kelas",
     icon: Users,
-    deskripsi: "Tambah atau hapus kelas",
+    deskripsi: "Kelola data siswa Kelas 1–6 & impor CSV",
   },
   {
-    label: "Data Siswa",
-    href: "/dashboard/siswa",
-    icon: Users,
-    deskripsi: "Daftar semua siswa",
-  },
-  {
-    label: "Input Nilai",
+    label: "Input Nilai Siswa",
     href: "/dashboard/nilai",
     icon: BookOpen,
-    deskripsi: "Isi nilai per kelas",
+    deskripsi: "Isi nilai PJOK per kelas & semester",
   },
   {
     label: "Pengaturan",
     href: "/dashboard/pengaturan",
     icon: Settings,
-    deskripsi: "Periode, KKM, bobot",
+    deskripsi: "Periode semester, KKM, & bobot nilai",
   },
 ] as const
 

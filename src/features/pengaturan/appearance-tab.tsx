@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
 import { useTheme } from "@teispace/next-themes"
 import {
-  Check,
   Loader2,
   Monitor,
   Moon,
@@ -27,6 +26,7 @@ import {
 } from "@/lib/validators/pengaturan"
 import { simpanTampilanAction } from "./actions"
 import { Button } from "@/components/ui/button"
+import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group"
 import {
   Card,
   CardContent,
@@ -44,11 +44,23 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select"
 import { useSidebar } from "@/components/ui/sidebar"
 
 export interface AppearanceTabProps {
   initialSettings?: Settings | null
 }
+
+const THEME_OPTIONS = {
+  light: { label: "Terang", Icon: Sun },
+  dark: { label: "Gelap", Icon: Moon },
+  system: { label: "Sistem (Perangkat)", Icon: Monitor },
+} as const
 
 export function AppearanceTab({ initialSettings }: AppearanceTabProps) {
   const queryClient = useQueryClient()
@@ -56,6 +68,13 @@ export function AppearanceTab({ initialSettings }: AppearanceTabProps) {
   const { theme, setTheme } = useTheme()
   const { setOpen } = useSidebar()
   const [isPending, startTransition] = React.useTransition()
+
+  const activeThemeKey =
+    theme === "light" || theme === "dark" || theme === "system"
+      ? theme
+      : "system"
+  const ActiveThemeIcon = THEME_OPTIONS[activeThemeKey].Icon
+  const activeThemeLabel = THEME_OPTIONS[activeThemeKey].label
 
   const form = useForm<AppearanceSettingsInput>({
     resolver: zodResolver(appearanceSettingsSchema),
@@ -167,40 +186,50 @@ export function AppearanceTab({ initialSettings }: AppearanceTabProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap gap-3">
-            <Button
-              type="button"
-              variant={theme === "light" ? "default" : "outline"}
-              onClick={() => setTheme("light")}
-              className="gap-2 cursor-pointer"
-            >
-              <Sun className="h-4 w-4" aria-hidden="true" />
-              <span>Terang</span>
-              {theme === "light" && <Check className="h-4 w-4" />}
-            </Button>
+          <ButtonGroup className="inline-flex items-stretch">
+            <ButtonGroupText className="h-8 py-0 gap-2 border-input bg-background px-3 text-xs sm:text-sm font-medium text-foreground select-none dark:bg-input/30">
+              <ActiveThemeIcon
+                className="h-4 w-4 text-primary shrink-0"
+                aria-hidden="true"
+              />
+              <span className="leading-none whitespace-nowrap">
+                {activeThemeLabel}
+              </span>
+            </ButtonGroupText>
 
-            <Button
-              type="button"
-              variant={theme === "dark" ? "default" : "outline"}
-              onClick={() => setTheme("dark")}
-              className="gap-2 cursor-pointer"
+            <Select
+              value={activeThemeKey}
+              onValueChange={(val) => setTheme(val)}
             >
-              <Moon className="h-4 w-4" aria-hidden="true" />
-              <span>Gelap</span>
-              {theme === "dark" && <Check className="h-4 w-4" />}
-            </Button>
-
-            <Button
-              type="button"
-              variant={theme === "system" ? "default" : "outline"}
-              onClick={() => setTheme("system")}
-              className="gap-2 cursor-pointer"
-            >
-              <Monitor className="h-4 w-4" aria-hidden="true" />
-              <span>Sistem (Perangkat)</span>
-              {theme === "system" && <Check className="h-4 w-4" />}
-            </Button>
-          </div>
+              <SelectTrigger
+                aria-label="Pilih tema warna aplikasi"
+                className="h-8 w-8 py-0 px-0 justify-center border-input bg-background hover:bg-muted cursor-pointer dark:bg-input/30 dark:hover:bg-input/50"
+              />
+              <SelectContent position="popper" align="end" className="min-w-48">
+                <SelectItem value="light" className="cursor-pointer">
+                  <Sun
+                    className="h-4 w-4 text-muted-foreground"
+                    aria-hidden="true"
+                  />
+                  <span>Terang</span>
+                </SelectItem>
+                <SelectItem value="dark" className="cursor-pointer">
+                  <Moon
+                    className="h-4 w-4 text-muted-foreground"
+                    aria-hidden="true"
+                  />
+                  <span>Gelap</span>
+                </SelectItem>
+                <SelectItem value="system" className="cursor-pointer">
+                  <Monitor
+                    className="h-4 w-4 text-muted-foreground"
+                    aria-hidden="true"
+                  />
+                  <span>Sistem (Perangkat)</span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </ButtonGroup>
         </CardContent>
       </Card>
 

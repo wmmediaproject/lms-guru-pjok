@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import {
   changePasswordSchema,
   periodeSchema,
+  profileSchema,
   weightSettingsSchema,
 } from "@/lib/validators/pengaturan"
 import { WeightSettingsForm } from "./weight-settings-form"
@@ -23,6 +24,7 @@ vi.mock("@/lib/supabase/sync-admin-profile", () => ({
 const mockFrom = vi.fn()
 const mockRpc = vi.fn()
 const mockUpdateUser = vi.fn()
+const mockGetUser = vi.fn()
 
 vi.mock("@/lib/supabase/server", () => ({
   createClient: vi.fn(async () => ({
@@ -30,6 +32,7 @@ vi.mock("@/lib/supabase/server", () => ({
     rpc: mockRpc,
     auth: {
       updateUser: mockUpdateUser,
+      getUser: mockGetUser,
     },
   })),
 }))
@@ -94,6 +97,48 @@ describe("Fase 3 — Periode & Pengaturan (Validasi, Actions & UI)", () => {
           "Konfirmasi kata sandi tidak cocok",
         )
       }
+    })
+
+    it("profileSchema memvalidasi nama_lengkap wajib dan field opsional", () => {
+      expect(
+        profileSchema.safeParse({
+          nama_lengkap: "",
+        }).success,
+      ).toBe(false)
+
+      const valid = profileSchema.safeParse({
+        nama_lengkap: "Budi Santoso, S.Pd.",
+        nip: "19850101 201001 1 001",
+        no_hp: "08123456789",
+      })
+      expect(valid.success).toBe(true)
+    })
+  })
+
+  describe("Server Actions Akun Admin (ubahProfilAdminAction)", () => {
+    it("memperbarui user_metadata auth dengan nama_lengkap, nip, dan no_hp", async () => {
+      mockGetUser.mockResolvedValueOnce({
+        data: { user: { id: "admin-1", email: "admin@sekolah.sch.id" } },
+        error: null,
+      })
+      mockUpdateUser.mockResolvedValueOnce({ error: null })
+
+      const { ubahProfilAdminAction } = await import("./actions")
+      const result = await ubahProfilAdminAction({
+        nama_lengkap: "Pak Guru PJOK",
+        nip: "19800101",
+        no_hp: "0812345",
+      })
+
+      expect(result.success).toBe(true)
+      expect(mockUpdateUser).toHaveBeenCalledWith({
+        data: {
+          nama_lengkap: "Pak Guru PJOK",
+          nip: "19800101",
+          no_hp: "0812345",
+          full_name: "Pak Guru PJOK",
+        },
+      })
     })
   })
 
