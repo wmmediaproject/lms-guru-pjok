@@ -1,0 +1,13 @@
+node_modules
+.next
+.next-e2e
+.git
+.vercel
+.agents
+test-results
+playwright-report
+coverage
+*.log
+.env*.local
+*.tsbuildinfo
+e2e
