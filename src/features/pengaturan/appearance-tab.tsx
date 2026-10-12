@@ -114,15 +114,18 @@ export function AppearanceTab({ initialSettings }: AppearanceTabProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Kartu Nama Sekolah */}
       <Card>
-        <CardHeader>
-          <CardTitle className="font-heading text-xl font-bold uppercase tracking-wide flex items-center gap-2">
-            <School className="h-5 w-5 text-primary" aria-hidden="true" />
-            Identitas Sekolah
+        <CardHeader className="border-b border-border/60 pb-3.5 sm:pb-4">
+          <CardTitle className="font-heading text-base sm:text-xl font-bold uppercase tracking-wide flex items-center gap-2">
+            <School
+              className="h-4 w-4 sm:h-5 sm:w-5 shrink-0 text-primary"
+              aria-hidden="true"
+            />
+            <span>Identitas Sekolah</span>
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-xs sm:text-sm leading-relaxed">
             Nama sekolah bersifat opsional dan akan ditampilkan di header
             dashboard serta dokumen ekspor PDF.
           </CardDescription>
@@ -131,7 +134,7 @@ export function AppearanceTab({ initialSettings }: AppearanceTabProps) {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmitSchoolName)}
-              className="space-y-4 max-w-md"
+              className="w-full max-w-md space-y-4"
               noValidate
             >
               <FormField
@@ -139,7 +142,9 @@ export function AppearanceTab({ initialSettings }: AppearanceTabProps) {
                 name="nama_sekolah"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nama Sekolah (Opsional)</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">
+                      Nama Sekolah (Opsional)
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Contoh: SDN 01 Harapan Bangsa"
@@ -148,7 +153,7 @@ export function AppearanceTab({ initialSettings }: AppearanceTabProps) {
                         onChange={field.onChange}
                       />
                     </FormControl>
-                    <FormDescription>
+                    <FormDescription className="text-xs leading-relaxed">
                       Kosongkan jika tidak ingin menampilkan nama sekolah.
                     </FormDescription>
                     <FormMessage />
@@ -159,12 +164,15 @@ export function AppearanceTab({ initialSettings }: AppearanceTabProps) {
               <Button
                 type="submit"
                 disabled={isPending}
-                className="gap-1.5 cursor-pointer"
+                className="h-9 w-full sm:w-auto justify-center gap-1.5 text-xs sm:text-sm cursor-pointer"
               >
                 {isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin shrink-0" />
                 ) : (
-                  <Save className="h-4 w-4" aria-hidden="true" />
+                  <Save
+                    className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0"
+                    aria-hidden="true"
+                  />
                 )}
                 <span>Simpan Nama Sekolah</span>
               </Button>
@@ -175,19 +183,22 @@ export function AppearanceTab({ initialSettings }: AppearanceTabProps) {
 
       {/* Kartu Tema Tampilan */}
       <Card>
-        <CardHeader>
-          <CardTitle className="font-heading text-xl font-bold uppercase tracking-wide flex items-center gap-2">
-            <Sun className="h-5 w-5 text-primary" aria-hidden="true" />
-            Tema Warna Aplikasi
+        <CardHeader className="border-b border-border/60 pb-3.5 sm:pb-4">
+          <CardTitle className="font-heading text-base sm:text-xl font-bold uppercase tracking-wide flex items-center gap-2">
+            <Sun
+              className="h-4 w-4 sm:h-5 sm:w-5 shrink-0 text-primary"
+              aria-hidden="true"
+            />
+            <span>Tema Warna Aplikasi</span>
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-xs sm:text-sm leading-relaxed">
             Pilih tema tampilan terang, gelap, atau ikuti pengaturan perangkat
             secara otomatis.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ButtonGroup className="inline-flex items-stretch">
-            <ButtonGroupText className="h-8 py-0 gap-2 border-input bg-background px-3 text-xs sm:text-sm font-medium text-foreground select-none dark:bg-input/30">
+          <ButtonGroup className="flex w-full sm:inline-flex sm:w-auto items-stretch">
+            <ButtonGroupText className="h-9 sm:h-8 flex-1 sm:flex-initial py-0 gap-2 border-input bg-background px-3 text-xs sm:text-sm font-medium text-foreground select-none dark:bg-input/30">
               <ActiveThemeIcon
                 className="h-4 w-4 text-primary shrink-0"
                 aria-hidden="true"
@@ -203,7 +214,7 @@ export function AppearanceTab({ initialSettings }: AppearanceTabProps) {
             >
               <SelectTrigger
                 aria-label="Pilih tema warna aplikasi"
-                className="h-8 w-8 py-0 px-0 justify-center border-input bg-background hover:bg-muted cursor-pointer dark:bg-input/30 dark:hover:bg-input/50"
+                className="h-9 w-9 sm:h-8 sm:w-8 py-0 px-0 justify-center border-input bg-background hover:bg-muted cursor-pointer dark:bg-input/30 dark:hover:bg-input/50"
               />
               <SelectContent position="popper" align="end" className="min-w-48">
                 <SelectItem value="light" className="cursor-pointer">
@@ -235,12 +246,15 @@ export function AppearanceTab({ initialSettings }: AppearanceTabProps) {
 
       {/* Kartu Reset Status Sidebar */}
       <Card>
-        <CardHeader>
-          <CardTitle className="font-heading text-xl font-bold uppercase tracking-wide flex items-center gap-2">
-            <PanelLeft className="h-5 w-5 text-primary" aria-hidden="true" />
-            Bilah Sisi (Sidebar)
+        <CardHeader className="border-b border-border/60 pb-3.5 sm:pb-4">
+          <CardTitle className="font-heading text-base sm:text-xl font-bold uppercase tracking-wide flex items-center gap-2">
+            <PanelLeft
+              className="h-4 w-4 sm:h-5 sm:w-5 shrink-0 text-primary"
+              aria-hidden="true"
+            />
+            <span>Bilah Sisi (Sidebar)</span>
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-xs sm:text-sm leading-relaxed">
             Kembalikan posisi bilah sisi ke kondisi terbuka (expanded) default.
           </CardDescription>
         </CardHeader>
@@ -249,9 +263,12 @@ export function AppearanceTab({ initialSettings }: AppearanceTabProps) {
             type="button"
             variant="outline"
             onClick={handleResetSidebar}
-            className="gap-1.5 cursor-pointer"
+            className="h-9 w-full sm:w-auto justify-center gap-1.5 text-xs sm:text-sm cursor-pointer"
           >
-            <RotateCcw className="h-4 w-4" aria-hidden="true" />
+            <RotateCcw
+              className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0"
+              aria-hidden="true"
+            />
             <span>Reset Status Bilah Sisi</span>
           </Button>
         </CardContent>

@@ -93,14 +93,14 @@ export function AppSidebar({
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="border-b border-sidebar-border/80 py-3">
+      <SidebarHeader className="border-b border-sidebar-border/80 py-3 in-data-[mobile=true]:px-3 in-data-[mobile=true]:py-3.5">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
               asChild
               tooltip="LMS Guru PJOK"
-              className="hover:bg-sidebar-accent"
+              className="hover:bg-sidebar-accent in-data-[mobile=true]:h-12 in-data-[mobile=true]:px-2.5"
             >
               <Link href="/dashboard" onClick={handleLinkClick}>
                 <div className="flex aspect-square size-8 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs">
@@ -122,7 +122,7 @@ export function AppSidebar({
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="font-heading text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          <SidebarGroupLabel className="font-heading text-xs font-bold uppercase tracking-wider text-muted-foreground in-data-[mobile=true]:mb-1">
             Menu Utama
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -268,8 +268,8 @@ export function AppSidebar({
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border/80 py-2">
-        <div className="px-2 py-1 text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
+      <SidebarFooter className="border-t border-sidebar-border/80 py-2 in-data-[mobile=true]:px-3 in-data-[mobile=true]:py-2.5">
+        <div className="px-2 py-1 text-xs text-muted-foreground group-data-[collapsible=icon]:hidden in-data-[mobile=true]:px-2.5">
           <p className="font-medium text-sidebar-foreground">Panel Guru PJOK</p>
           <p className="truncate text-[11px]">Tahun Ajaran 2026–2027</p>
         </div>

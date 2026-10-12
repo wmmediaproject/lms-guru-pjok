@@ -116,12 +116,15 @@ export function WeightSettingsForm({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="font-heading text-xl font-bold uppercase tracking-wide flex items-center gap-2">
-          <Sliders className="h-5 w-5 text-primary" aria-hidden="true" />
-          Bobot Komponen Nilai &amp; KKM
+      <CardHeader className="border-b border-border/60 pb-4">
+        <CardTitle className="font-heading text-base sm:text-xl font-bold uppercase tracking-wide flex items-center gap-2">
+          <Sliders
+            className="h-4 w-4 sm:h-5 sm:w-5 shrink-0 text-primary"
+            aria-hidden="true"
+          />
+          <span>Bobot Komponen Nilai &amp; KKM</span>
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-xs sm:text-sm leading-relaxed">
           Atur persentase bobot keempat komponen penilaian (total wajib 100%)
           serta Kriteria Ketuntasan Minimal (KKM). Perubahan akan otomatis
           menghitung ulang Nilai Akhir dan Predikat seluruh siswa.
@@ -132,16 +135,18 @@ export function WeightSettingsForm({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6"
+            className="space-y-4 sm:space-y-6"
             noValidate
           >
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
               <FormField
                 control={form.control}
                 name="bobot_praktek"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Bobot Nilai Praktek (%)</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">
+                      Bobot Nilai Praktek (%)
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -169,7 +174,9 @@ export function WeightSettingsForm({
                 name="bobot_uh"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Bobot Nilai UH (%)</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">
+                      Bobot Nilai UH (%)
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -197,7 +204,9 @@ export function WeightSettingsForm({
                 name="bobot_asts"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Bobot Nilai ASTS (%)</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">
+                      Bobot Nilai ASTS (%)
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -225,7 +234,9 @@ export function WeightSettingsForm({
                 name="bobot_asas"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Bobot Nilai ASAS (%)</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">
+                      Bobot Nilai ASAS (%)
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -253,18 +264,18 @@ export function WeightSettingsForm({
             <div
               role="status"
               aria-live="polite"
-              className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border/80 bg-muted/40 px-4 py-3"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-lg border border-border/80 bg-muted/40 px-3.5 py-2.5 sm:px-4 sm:py-3"
             >
-              <span className="text-sm font-medium text-foreground">
+              <span className="text-xs sm:text-sm font-medium text-foreground">
                 Total Bobot Komponen Saat Ini:
               </span>
               {isTotalValid ? (
-                <Badge className="gap-1.5 bg-primary text-primary-foreground">
+                <Badge className="w-fit gap-1.5 bg-primary text-primary-foreground">
                   <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>{totalBobot}% (Sesuai — 100%)</span>
                 </Badge>
               ) : (
-                <Badge variant="destructive" className="gap-1.5">
+                <Badge variant="destructive" className="w-fit gap-1.5">
                   <AlertCircle className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>{totalBobot}% (Wajib tepat 100%)</span>
                 </Badge>
@@ -273,13 +284,15 @@ export function WeightSettingsForm({
 
             <Separator />
 
-            <div className="max-w-xs">
+            <div className="w-full sm:max-w-xs">
               <FormField
                 control={form.control}
                 name="kkm"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Kriteria Ketuntasan Minimal (KKM)</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">
+                      Kriteria Ketuntasan Minimal (KKM)
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -297,7 +310,7 @@ export function WeightSettingsForm({
                         }
                       />
                     </FormControl>
-                    <FormDescription>
+                    <FormDescription className="text-xs leading-relaxed">
                       Siswa dinyatakan <strong>Tuntas</strong> bila Nilai Akhir
                       &ge; KKM, dan <strong>Belum Tuntas</strong> bila &lt; KKM.
                     </FormDescription>
@@ -307,27 +320,35 @@ export function WeightSettingsForm({
               />
             </div>
 
-            <div className="flex flex-wrap items-center justify-end gap-2 pt-2">
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-end gap-2 pt-2">
               <Button
                 type="button"
                 variant="outline"
                 disabled={isPending}
                 onClick={handleResetDefault}
-                className="gap-1.5 cursor-pointer"
+                className="h-9 w-full sm:w-auto justify-center gap-1.5 text-xs sm:text-sm cursor-pointer"
               >
-                <RotateCcw className="h-4 w-4" aria-hidden="true" />
-                <span>Kembalikan Default (25% &amp; KKM 75)</span>
+                <RotateCcw
+                  className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0"
+                  aria-hidden="true"
+                />
+                <span className="truncate">
+                  Kembalikan Default (25% &amp; KKM 75)
+                </span>
               </Button>
 
               <Button
                 type="submit"
                 disabled={isPending}
-                className="gap-1.5 cursor-pointer"
+                className="h-9 w-full sm:w-auto justify-center gap-1.5 text-xs sm:text-sm cursor-pointer"
               >
                 {isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin shrink-0" />
                 ) : (
-                  <Save className="h-4 w-4" aria-hidden="true" />
+                  <Save
+                    className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0"
+                    aria-hidden="true"
+                  />
                 )}
                 <span>Simpan Pengaturan Penilaian</span>
               </Button>

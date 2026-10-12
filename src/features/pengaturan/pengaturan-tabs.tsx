@@ -25,22 +25,46 @@ export function PengaturanTabs({
 }: PengaturanTabsProps) {
   return (
     <Tabs defaultValue="periode" className="w-full space-y-4">
-      <TabsList className="flex w-full sm:w-auto flex-wrap h-auto gap-1 p-1">
-        <TabsTrigger value="periode" className="gap-1.5 cursor-pointer">
-          <CalendarDays className="h-4 w-4" aria-hidden="true" />
-          <span>Periode</span>
+      <TabsList className="grid w-full grid-cols-4 gap-1 p-1 group-data-horizontal/tabs:h-10 sm:inline-flex sm:w-auto sm:group-data-horizontal/tabs:h-9">
+        <TabsTrigger
+          value="periode"
+          className="h-full gap-1 px-1.5 text-xs sm:gap-1.5 sm:px-3 sm:text-sm cursor-pointer"
+        >
+          <CalendarDays
+            className="size-3.5 sm:size-4 shrink-0"
+            aria-hidden="true"
+          />
+          <span className="truncate">Periode</span>
         </TabsTrigger>
-        <TabsTrigger value="penilaian" className="gap-1.5 cursor-pointer">
-          <Sliders className="h-4 w-4" aria-hidden="true" />
-          <span>Penilaian</span>
+        <TabsTrigger
+          value="penilaian"
+          className="h-full gap-1 px-1.5 text-xs sm:gap-1.5 sm:px-3 sm:text-sm cursor-pointer"
+        >
+          <Sliders
+            className="size-3.5 sm:size-4 shrink-0"
+            aria-hidden="true"
+          />
+          <span className="truncate">Penilaian</span>
         </TabsTrigger>
-        <TabsTrigger value="tampilan" className="gap-1.5 cursor-pointer">
-          <Palette className="h-4 w-4" aria-hidden="true" />
-          <span>Tampilan</span>
+        <TabsTrigger
+          value="tampilan"
+          className="h-full gap-1 px-1.5 text-xs sm:gap-1.5 sm:px-3 sm:text-sm cursor-pointer"
+        >
+          <Palette
+            className="size-3.5 sm:size-4 shrink-0"
+            aria-hidden="true"
+          />
+          <span className="truncate">Tampilan</span>
         </TabsTrigger>
-        <TabsTrigger value="akun" className="gap-1.5 cursor-pointer">
-          <KeyRound className="h-4 w-4" aria-hidden="true" />
-          <span>Akun</span>
+        <TabsTrigger
+          value="akun"
+          className="h-full gap-1 px-1.5 text-xs sm:gap-1.5 sm:px-3 sm:text-sm cursor-pointer"
+        >
+          <KeyRound
+            className="size-3.5 sm:size-4 shrink-0"
+            aria-hidden="true"
+          />
+          <span className="truncate">Akun</span>
         </TabsTrigger>
       </TabsList>
 

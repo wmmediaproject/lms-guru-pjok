@@ -102,29 +102,33 @@ export function AccountTab({ userEmail, profile }: AccountTabProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="font-heading text-xl font-bold uppercase tracking-wide flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-primary" aria-hidden="true" />
-            Informasi & Profil Admin
+        <CardHeader className="border-b border-border/60 pb-3.5 sm:pb-4">
+          <CardTitle className="font-heading text-base sm:text-xl font-bold uppercase tracking-wide flex items-center gap-2">
+            <ShieldCheck
+              className="h-4 w-4 sm:h-5 sm:w-5 shrink-0 text-primary"
+              aria-hidden="true"
+            />
+            <span>Informasi &amp; Profil Admin</span>
           </CardTitle>
-          <CardDescription>
-            Perbarui data identitas profil akun administrator yang tampil di aplikasi.
+          <CardDescription className="text-xs sm:text-sm leading-relaxed">
+            Perbarui data identitas profil akun administrator yang tampil di
+            aplikasi.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...profileForm}>
             <form
               onSubmit={profileForm.handleSubmit(onProfileSubmit)}
-              className="max-w-md space-y-4"
+              className="w-full max-w-md space-y-4"
               noValidate
             >
               <div className="space-y-1.5">
                 <p className="text-xs font-medium text-muted-foreground">
                   Email Terdaftar (Akun Login)
                 </p>
-                <p className="rounded-md border border-border/80 bg-muted/40 px-3 py-2 text-sm font-medium text-foreground">
+                <p className="truncate rounded-md border border-border/80 bg-muted/40 px-3 py-2 text-xs sm:text-sm font-medium text-foreground">
                   {userEmail || "admin@sekolah.sch.id"}
                 </p>
               </div>
@@ -134,7 +138,9 @@ export function AccountTab({ userEmail, profile }: AccountTabProps) {
                 name="nama_lengkap"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nama Lengkap / Nama Profil</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">
+                      Nama Lengkap / Nama Profil
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Contoh: Budi Santoso, S.Pd."
@@ -142,7 +148,7 @@ export function AccountTab({ userEmail, profile }: AccountTabProps) {
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription>
+                    <FormDescription className="text-xs leading-relaxed">
                       Nama yang tampil di bagian atas menu admin.
                     </FormDescription>
                     <FormMessage />
@@ -155,7 +161,9 @@ export function AccountTab({ userEmail, profile }: AccountTabProps) {
                 name="nip"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>NIP (Opsional)</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">
+                      NIP (Opsional)
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Contoh: 19850101 201001 1 001"
@@ -173,7 +181,9 @@ export function AccountTab({ userEmail, profile }: AccountTabProps) {
                 name="no_hp"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nomor WhatsApp / HP (Opsional)</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">
+                      Nomor WhatsApp / HP (Opsional)
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="tel"
@@ -190,12 +200,15 @@ export function AccountTab({ userEmail, profile }: AccountTabProps) {
               <Button
                 type="submit"
                 disabled={isPendingProfile}
-                className="gap-1.5 cursor-pointer"
+                className="h-9 w-full sm:w-auto justify-center gap-1.5 text-xs sm:text-sm cursor-pointer"
               >
                 {isPendingProfile ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin shrink-0" />
                 ) : (
-                  <Save className="h-4 w-4" aria-hidden="true" />
+                  <Save
+                    className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0"
+                    aria-hidden="true"
+                  />
                 )}
                 <span>Simpan Profil Admin</span>
               </Button>
@@ -205,12 +218,15 @@ export function AccountTab({ userEmail, profile }: AccountTabProps) {
       </Card>
 
       <Card>
-        <CardHeader>
-          <CardTitle className="font-heading text-xl font-bold uppercase tracking-wide flex items-center gap-2">
-            <KeyRound className="h-5 w-5 text-primary" aria-hidden="true" />
-            Ganti Kata Sandi
+        <CardHeader className="border-b border-border/60 pb-3.5 sm:pb-4">
+          <CardTitle className="font-heading text-base sm:text-xl font-bold uppercase tracking-wide flex items-center gap-2">
+            <KeyRound
+              className="h-4 w-4 sm:h-5 sm:w-5 shrink-0 text-primary"
+              aria-hidden="true"
+            />
+            <span>Ganti Kata Sandi</span>
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-xs sm:text-sm leading-relaxed">
             Perbarui kata sandi akun admin Anda (minimal 6 karakter).
           </CardDescription>
         </CardHeader>
@@ -218,7 +234,7 @@ export function AccountTab({ userEmail, profile }: AccountTabProps) {
           <Form {...passwordForm}>
             <form
               onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}
-              className="max-w-md space-y-4"
+              className="w-full max-w-md space-y-4"
               noValidate
             >
               <FormField
@@ -226,7 +242,9 @@ export function AccountTab({ userEmail, profile }: AccountTabProps) {
                 name="password_baru"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Kata Sandi Baru</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">
+                      Kata Sandi Baru
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="password"
@@ -246,7 +264,9 @@ export function AccountTab({ userEmail, profile }: AccountTabProps) {
                 name="konfirmasi_password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Konfirmasi Kata Sandi Baru</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">
+                      Konfirmasi Kata Sandi Baru
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="password"
@@ -264,12 +284,15 @@ export function AccountTab({ userEmail, profile }: AccountTabProps) {
               <Button
                 type="submit"
                 disabled={isPendingPassword}
-                className="gap-1.5 cursor-pointer"
+                className="h-9 w-full sm:w-auto justify-center gap-1.5 text-xs sm:text-sm cursor-pointer"
               >
                 {isPendingPassword ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin shrink-0" />
                 ) : (
-                  <Save className="h-4 w-4" aria-hidden="true" />
+                  <Save
+                    className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0"
+                    aria-hidden="true"
+                  />
                 )}
                 <span>Simpan Kata Sandi Baru</span>
               </Button>
