@@ -295,4 +295,8 @@
   .animate-hero-grid-pulse {
     animation: none !important;
   }
+
+  [role="progressbar"] {
+    transition: none !important;
+  }
 }

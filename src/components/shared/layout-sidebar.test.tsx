@@ -17,6 +17,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 const mockUsePathname = vi.fn(() => "/dashboard")
 vi.mock("next/navigation", () => ({
   usePathname: () => mockUsePathname(),
+  useSearchParams: () => new URLSearchParams(),
   redirect: vi.fn(),
 }))
 

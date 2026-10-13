@@ -5,6 +5,7 @@ import { ThemeProvider as NextThemesProvider } from "@teispace/next-themes"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { TopLoadingBar } from "@/components/shared/top-loading-bar"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(
@@ -40,6 +41,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     >
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
+          <TopLoadingBar />
           {children}
           <Toaster richColors position="top-right" />
         </TooltipProvider>
