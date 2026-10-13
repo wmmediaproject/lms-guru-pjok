@@ -5,6 +5,7 @@ import { ensureAdminProfile } from "@/lib/supabase/sync-admin-profile"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/shared/app-sidebar"
 import { DashboardHeader } from "@/components/shared/dashboard-header"
+import { DashboardPageContainer } from "@/components/shared/dashboard-page-container"
 import { SIDEBAR_STORAGE_KEY, parseSidebarCookie } from "@/lib/sidebar-utils"
 
 export default async function DashboardLayout({
@@ -63,9 +64,9 @@ export default async function DashboardLayout({
           namaSekolah={namaSekolah}
           activePeriodName={activePeriodName}
         />
-        <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6 min-w-0 lg:overflow-x-hidden">
+        <DashboardPageContainer>
           {children}
-        </div>
+        </DashboardPageContainer>
       </SidebarInset>
     </SidebarProvider>
   )

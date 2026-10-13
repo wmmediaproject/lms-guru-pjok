@@ -519,7 +519,7 @@ export function GradesTableView({
   return (
     <div className="space-y-6 min-w-0 lg:overflow-x-hidden">
       <PageHeader
-        title="Nilai Siswa"
+        title={`Nilai Siswa Kelas ${selectedKelas}`}
         description={`Input dan kelola nilai PJOK Kelas ${selectedKelas} pada ${selectedPeriod?.nama ?? "periode aktif"}. Tersimpan otomatis.`}
         actions={
           <div className="flex items-center gap-2 w-full sm:w-auto">

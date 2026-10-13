@@ -93,14 +93,14 @@ export function AppSidebar({
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="border-b border-sidebar-border/80 py-3 in-data-[mobile=true]:px-3 in-data-[mobile=true]:py-3.5">
-        <SidebarMenu>
+      <SidebarHeader className="h-14 border-b border-sidebar-border/80 px-2 sm:px-3 py-0 flex flex-row items-center justify-between in-data-[mobile=true]:px-3">
+        <SidebarMenu className="w-full">
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
               asChild
               tooltip="LMS Guru PJOK"
-              className="hover:bg-sidebar-accent in-data-[mobile=true]:h-12 in-data-[mobile=true]:px-2.5"
+              className="hover:bg-sidebar-accent h-10 in-data-[mobile=true]:h-12 in-data-[mobile=true]:px-2.5"
             >
               <Link href="/dashboard" onClick={handleLinkClick}>
                 <div className="flex aspect-square size-8 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs">
@@ -121,32 +121,6 @@ export function AppSidebar({
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup className="pb-0">
-          <SidebarGroupLabel className="font-heading text-xs font-bold uppercase tracking-wider text-muted-foreground in-data-[mobile=true]:mb-1">
-            Navigasi
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isHomeActive}
-                  tooltip="Beranda"
-                  className={cn(
-                    isHomeActive &&
-                      "bg-primary/15 text-primary font-semibold hover:bg-primary/20 hover:text-primary",
-                  )}
-                >
-                  <Link href="/" onClick={handleLinkClick}>
-                    <Home aria-hidden="true" />
-                    <span>Beranda</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
         <SidebarGroup>
           <SidebarGroupLabel className="font-heading text-xs font-bold uppercase tracking-wider text-muted-foreground in-data-[mobile=true]:mb-1">
             Menu Utama
@@ -268,6 +242,32 @@ export function AppSidebar({
                   <Link href="/dashboard/pengaturan" onClick={handleLinkClick}>
                     <Settings aria-hidden="true" />
                     <span>Pengaturan</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup className="pt-0">
+          <SidebarGroupLabel className="font-heading text-xs font-bold uppercase tracking-wider text-muted-foreground in-data-[mobile=true]:mb-1">
+            Navigasi
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isHomeActive}
+                  tooltip="Beranda"
+                  className={cn(
+                    isHomeActive &&
+                      "bg-primary/15 text-primary font-semibold hover:bg-primary/20 hover:text-primary",
+                  )}
+                >
+                  <Link href="/" onClick={handleLinkClick}>
+                    <Home aria-hidden="true" />
+                    <span>Beranda</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

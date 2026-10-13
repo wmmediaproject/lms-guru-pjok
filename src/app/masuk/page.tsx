@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ThemeToggle } from "@/components/shared/theme-toggle"
+import { PageTransition } from "@/components/shared/page-transition"
 import { LoginForm } from "./login-form"
 
 export const metadata: Metadata = {
@@ -23,7 +24,8 @@ export default function MasukPage() {
         <ThemeToggle />
       </div>
 
-      <div className="w-full max-w-sm space-y-6">
+      <PageTransition className="flex flex-col items-center justify-center w-full max-w-sm">
+        <div className="w-full space-y-6">
         <div className="flex flex-col items-center space-y-2 text-center">
           <Badge
             variant="outline"
@@ -55,7 +57,8 @@ export default function MasukPage() {
             <LoginForm />
           </CardContent>
         </Card>
-      </div>
+        </div>
+      </PageTransition>
     </main>
   )
 }
