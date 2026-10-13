@@ -41,7 +41,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     >
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <TopLoadingBar />
+          <React.Suspense fallback={null}>
+            <TopLoadingBar />
+          </React.Suspense>
           {children}
           <Toaster richColors position="top-right" />
         </TooltipProvider>

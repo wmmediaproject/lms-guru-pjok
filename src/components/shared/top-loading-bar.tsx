@@ -33,29 +33,19 @@ export function TopLoadingBar({
   trackQueries = true,
 }: TopLoadingBarProps) {
   const pathname = typeof NextNav.usePathname === "function" ? NextNav.usePathname() : "/"
-  const searchParams =
-    typeof NextNav.useSearchParams === "function"
-      ? NextNav.useSearchParams()
-      : null
   const { progress, visible, start, done } = useTopLoadingBar()
 
   const { isFetching, isMutating } = useSafeQueryActivity(trackQueries)
 
-  // Track page transitions: saat pathname / searchParams berubah, selesaikan progress bar
+  // Track page transitions: saat pathname berubah, selesaikan progress bar
   const prevPathRef = React.useRef(pathname)
-  const prevParamsRef = React.useRef(searchParams?.toString())
 
   React.useEffect(() => {
-    const currentParams = searchParams?.toString()
-    if (
-      prevPathRef.current !== pathname ||
-      prevParamsRef.current !== currentParams
-    ) {
+    if (prevPathRef.current !== pathname) {
       prevPathRef.current = pathname
-      prevParamsRef.current = currentParams
       done()
     }
-  }, [pathname, searchParams, done])
+  }, [pathname, done])
 
   // Tangkap klik pada tautan <a> untuk memicu animasi secara instan sebelum halaman selesai dirender
   React.useEffect(() => {
